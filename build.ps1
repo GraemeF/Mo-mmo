@@ -1,13 +1,10 @@
 properties {
-  $testMessage = 'Executed Test!'
-  $compileMessage = 'Executed Compile!'
-  $cleanMessage = 'Executed Clean!'
 }
 
 task default -depends Test
 
 task Test -depends Compile, Clean { 
-  exec { vows speclib/test_hello.js }
+  exec { vows speclib/helloworld.js --spec }
 }
 
 task Compile -depends Clean { 
