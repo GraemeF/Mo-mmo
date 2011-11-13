@@ -2,14 +2,14 @@ Sinon = require "sinon"
 assert = require "assert"
 http = require "http"
 
-exports.spy = (object,method) ->
+module.exports.spy = (object,method) ->
   Sinon.spy object, method
 
-exports.stub = (object, method, fn) ->
+module.exports.stub = (object, method, fn) ->
   Sinon.stub object, method, fn
 
-exports.spyRender = ->
+module.exports.spyRender = ->
   @response = http.ServerResponse.prototype
   Sinon.spy @response, "render"
 
-exports.assert = assert
+module.exports.assert = assert

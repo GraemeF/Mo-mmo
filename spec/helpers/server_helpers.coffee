@@ -1,7 +1,7 @@
 http = require "http"
 
-exports.port = port = 3003
 server = (require "#{__dirname}/../../lib/app")
+
 server.ready = (callback) ->
   if @active
     process.nextTick callback
@@ -21,6 +21,8 @@ wait = ->
     return
 
 server.ready wait
+
+port = 3003
 
 makeRequest = (url,params,method,callback) ->
   params ||= ""
@@ -46,14 +48,13 @@ makeRequest = (url,params,method,callback) ->
       request.write params
     request.end()
 
-
-exports.server = server
-
-exports.get = (url,params,callback) ->
-  if arguments.length == 2
-    callback = arguments[1]
-    params = null
-  makeRequest url,params,"GET",callback
-
-exports.post = (url,params,callback) ->
-  makeRequest url,params,"POST",callback
+module.exports =
+	port: port
+	server: server
+	get: (url,params,callback) ->
+	  if arguments.length == 2
+	    callback = arguments[1]
+	    params = null
+	  makeRequest url,params,"GET",callback
+	post: (url,params,callback) ->
+	  makeRequest url,params,"POST",callback

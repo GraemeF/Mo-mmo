@@ -1,3 +1,4 @@
+{Feature} = require "vows-bdd"
 {Server, Test} = require "./helpers"
 vows = require 'vows'
 
