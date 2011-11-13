@@ -6,33 +6,9 @@ Feature("Server", module)
   .scenario("Say hello")  
   .given "the server is running", ->
     Server.server.ready @callback
-    
   .when "I visit the server", ->
     Server.get "http://localhost:#{Server.port}/", @callback
-    
-  .then "I should see a username field", (err,browser,status) ->
-    Test.assert.ok browser.querySelector ":input[name=username]"
-
-  .and "I should see entries for first and last name", (err,browser,status) ->
-    assert.ok browser.querySelector ":input[name=firstName]"
-    assert.ok browser.querySelector ":input[name=lastName]"
-
-  .and "I should see a password entry", (err,browser,status) ->
-    assert.ok browser.querySelector, ":input[name=password]"
-
-  .and "I should see a password confirmation", (err,browser,status) ->
-    assert.ok browser.querySelector, ":input[name=passwordConfirm]"
-
-  .when "I submit the form", (browser,status) ->
-    browser.fill("username", "test")
-           .fill("firstName", "Justin")
-           .fill("lastName", "Reidy")
-           .fill("password", "foobar")
-           .fill("password", "foobar")
-           .pressButton "Sign Up!", @callback
-
-  .then "a new User should be created", (err,browser,status) ->
-    assert.ok findNewUser()
-
+  .then "the response should be friendly", (err,response) ->
+    Test.assert.equal response.body, "Hello World\n"
   .complete()
-  .finish(module)
+  .finish module
