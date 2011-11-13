@@ -1,6 +1,7 @@
 http = require "http"
 
 server = (require "#{__dirname}/../../lib/app")
+port = 3003
 
 server.ready = (callback) ->
   if @active
@@ -22,7 +23,6 @@ wait = ->
 
 server.ready wait
 
-port = 3003
 
 makeRequest = (url,params,method,callback) ->
   params ||= ""

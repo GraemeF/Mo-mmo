@@ -2,17 +2,16 @@
 {Server, Test} = require "./helpers"
 vows = require 'vows'
 
-Feature "Server", module
-  .scenario "Say hello"
-  
+Feature("Server", module)
+  .scenario("Say hello")  
   .given "the server is running", ->
-    Server.ready @callback
+    Server.server.ready @callback
     
   .when "I visit the server", ->
-    Server.get "http://localhost:#{port}/", @callback
+    Server.get "http://localhost:#{Server.port}/", @callback
     
   .then "I should see a username field", (err,browser,status) ->
-    assert.ok browser.querySelector ":input[name=username]"
+    Test.assert.ok browser.querySelector ":input[name=username]"
 
   .and "I should see entries for first and last name", (err,browser,status) ->
     assert.ok browser.querySelector ":input[name=firstName]"
