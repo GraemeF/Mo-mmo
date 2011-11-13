@@ -4,7 +4,8 @@ properties {
 task default -depends Test
 
 task Test -depends Compile, Clean { 
-  exec { vows speclib/helloworld.js --spec }
+  $paths = Get-ChildItem speclib -Recurse -Include *-spec.js | ForEach-Object { Resolve-Path $_.FullName -Relative }
+  exec { vows $paths --spec }
 }
 
 task Compile -depends Clean { 
