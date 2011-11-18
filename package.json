@@ -13,6 +13,7 @@
 	"devDependencies": {
 		"coffee-script": "",
 		"sinon": "",
-		"vows": ""
+		"vows": "",
+		"vows-bdd": ""
 	}
 }
