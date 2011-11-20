@@ -1,12 +1,15 @@
 express = require "express"
 logger = require '../logger'
 
-app = express.createServer()
-app.use express.logger("dev")
-app.use express.bodyParser()
+class CommandServer
+	constructor: (@server, @processor) ->
 
-app.post '/commands', (req, res) ->
-	logger.debug "Received #{JSON.stringify req.body}"
-	throw "Not implemented"
+	listen: (port, callback) ->
+		@server.use express.logger("dev")
+		@server.use express.bodyParser()
+		@server.post '/commands', (req, res) ->
+			logger.debug "Received #{JSON.stringify req.body}"
+			@processor.handle req.body, @callback
+		@server.listen port, callback
 
-module.exports = app
+module.exports = CommandServer

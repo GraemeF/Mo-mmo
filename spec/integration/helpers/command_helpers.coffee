@@ -1,6 +1,8 @@
 request = require 'request'
 logger = require "#{__dirname}/../../../lib/logger"
-server = require "#{__dirname}/../../../lib/app"
+CommandServer = require "#{__dirname}/../../../lib/app"
+
+server = new CommandServer()
 
 port = 3003
 
@@ -11,7 +13,7 @@ server.ready = (callback) ->
     @active = true
 		logger.info "Starting command server"
 		server.listen port
-		logger.info "Listening on port #{server.address().port}"
+		logger.info "Listening on port #{port}"
 		process.nextTick callback
   return
 
