@@ -7,6 +7,6 @@ app.use express.bodyParser()
 
 app.post '/commands', (req, res) ->
 	logger.debug "Received #{JSON.stringify req.body}"
-	res.send(200)
+	throw "Not implemented"
 
 module.exports = app

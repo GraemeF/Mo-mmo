@@ -3,10 +3,17 @@ properties {
 
 task default -depends Test
 
-task Test -depends Compile, Clean { 
-  $paths = Get-ChildItem speclib -Recurse -Include *-spec.js | ForEach-Object { Resolve-Path $_.FullName -Relative }
+task IntegrationTests -depends UnitTests { 
+  $paths = Get-ChildItem speclib/integration -Recurse -Include *-spec.js | ForEach-Object { Resolve-Path $_.FullName -Relative }
   exec { vows $paths --spec }
 }
+
+task UnitTests -depends Compile { 
+  $paths = Get-ChildItem speclib/app -Recurse -Include *-spec.js | ForEach-Object { Resolve-Path $_.FullName -Relative }
+  exec { vows $paths --spec }
+}
+
+task Test -depends UnitTests, IntegrationTests
 
 task Compile -depends Clean { 
   exec { coffee --bare --compile --output lib/ src/ }
