@@ -1,2 +1,2 @@
 module.exports =
-  require "#{__dirname}/server"
+  require "./commandServer"

@@ -1,19 +1,24 @@
 {
-	"author": "Graeme Foster <graemef@gmail.com> (http://graemef.com)",
-	"name": "mommo",
-	"description": "Some kind of game thing.",
-	"version": "0.0.0",
-	"repository": {
-		"url": ""
-	},
-	"engines": {
-		"node": "0.6.0"
-	},
-	"dependencies": {},
-	"devDependencies": {
-		"coffee-script": "",
-		"sinon": "",
-		"vows": "",
-		"vows-bdd": ""
-	}
+    "author":"Graeme Foster <graemef@gmail.com> (http://graemef.com)",
+    "name":"mommo",
+    "description":"Some kind of game thing.",
+    "version":"0.0.0",
+    "repository":{
+        "url":""
+    },
+    "engines":{
+        "node":"0.6.0"
+    },
+    "dependencies":{
+        "winston":"",
+        "socket.io":"",
+        "express":""
+    },
+    "devDependencies":{
+        "coffee-script":"",
+        "request":"",
+        "sinon":"",
+        "vows":"",
+        "vows-bdd":""
+    }
 }
