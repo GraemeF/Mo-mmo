@@ -12,6 +12,12 @@ fakeExpressServer = () ->
 	stubServer.listen.callsArg 1
 	return stubServer
 
+fakeCommandProcessor = () ->
+	stubProcessor = new CommandProcessor()
+	Sinon.stub stubProcessor, "handle"
+	stubProcessor.handle.callsArg 1
+	return stubProcessor
+
 Feature("commandServer", module)
 	.scenario("Receive a command")
 	.given "a command", ->
@@ -20,9 +26,7 @@ Feature("commandServer", module)
 	.and "there is a listening command server", ->
 		server = fakeExpressServer()
 		Sinon.stub server, "post", (path, func) => @postReceiver = func
-		@processor = new CommandProcessor()
-		Sinon.stub @processor, "handle"
-		@processor.handle.callsArg 1
+		@processor = fakeCommandProcessor()
 		commandServer = new CommandServer(server, @processor)
 		commandServer.listen "some port", @callback
 	.when "it receives a POSTed command", ->
