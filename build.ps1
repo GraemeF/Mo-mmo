@@ -9,7 +9,7 @@ task IntegrationTests -depends UnitTests {
 }
 
 task UnitTests -depends Compile { 
-  $paths = Get-ChildItem speclib/app -Recurse -Include *-spec.js | ForEach-Object { Resolve-Path $_.FullName -Relative }
+  $paths = Get-ChildItem speclib -Recurse -Include *-spec.js | ForEach-Object { Resolve-Path $_.FullName -Relative }
   exec { vows $paths --spec }
 }
 

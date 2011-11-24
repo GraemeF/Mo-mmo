@@ -1,5 +1,5 @@
-logger = require '../logger'
-Character = require './Character'
+log = require '../logger'
+Character = require '../domain/Character'
 
 class AddCharacterHandler
 	constructor: (@characterRepo) ->

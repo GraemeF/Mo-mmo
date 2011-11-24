@@ -1,3 +1,4 @@
+log = require '../../lib/logger'
 {Feature} = require "vows-bdd"
 vows = require 'vows'
 assert = require 'assert'
@@ -35,7 +36,6 @@ Feature("addCharacterHandler", module)
 		Sinon.assert.called @repo.addCharacter
 		call = @repo.addCharacter.getCall 0
 		addedCharacter = call.args[0]
-		console.log JSON.stringify addedCharacter
 		assert.equal addedCharacter.name, "bob"
 		assert.equal addedCharacter.id, 1
 
