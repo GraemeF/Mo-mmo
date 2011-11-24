@@ -1,4 +1,3 @@
-store = require "./EventStore"
 log = require "../../lib/logger"
 
 class Character
