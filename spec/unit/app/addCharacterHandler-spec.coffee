@@ -1,10 +1,10 @@
-log = require '../../lib/logger'
+log = require '../../../lib/logger'
 {Feature} = require "vows-bdd"
 vows = require 'vows'
 assert = require 'assert'
 Sinon = require "sinon"
 
-AddCharacterHandler = require '#{__dirname}/../../lib/app/addCharacterHandler'
+AddCharacterHandler = require "../../../lib/app/addCharacterHandler"
 
 fakeRepo = ->
 	addCharacter: (character, callback) -> callback()

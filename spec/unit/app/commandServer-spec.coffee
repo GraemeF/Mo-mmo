@@ -3,8 +3,8 @@ vows = require 'vows'
 Sinon = require "sinon"
 express = require "express"
 
-CommandServer = require '#{__dirname}/../../lib/app/commandServer'
-CommandProcessor = require '#{__dirname}/../../lib/app/commandProcessor'
+CommandServer = require '../../../lib/app/commandServer'
+CommandProcessor = require '../../../lib/app/commandProcessor'
 
 fakeExpressServer = () ->
 	stubServer = express.createServer()

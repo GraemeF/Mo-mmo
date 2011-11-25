@@ -1,4 +1,5 @@
-log = require "../../lib/logger"
+log = require "../logger"
+log.debug "Loading #{__filename}"
 
 class Character
 

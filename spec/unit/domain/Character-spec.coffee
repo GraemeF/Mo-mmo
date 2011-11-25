@@ -1,5 +1,5 @@
-Character = require "../../lib/domain/Character"
-log = require "../../lib/logger"
+Character = require "../../../lib/domain/Character"
+log = require "../../../lib/logger"
 {Feature} = require "vows-bdd"
 vows = require 'vows'
 assert = require 'assert'

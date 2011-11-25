@@ -1,26 +1,32 @@
+util = require "util"
+express = require "express"
 request = require 'request'
-logger = require "#{__dirname}/../../../lib/logger"
-CommandServer = require "#{__dirname}/../../../lib/app"
+log = require "../../../lib/logger"
+Mommo = require "../../../lib"
 
-server = new CommandServer()
+log.debug "Loading #{__filename}"
+server = express.createServer()
+
+commandProcessor = new Mommo.App.CommandProcessor()
+commandServer = new Mommo.App.CommandServer(server, commandProcessor)
 
 port = 3003
 
-server.ready = (callback) ->
+commandServer.ready = (callback) ->
   if @active
     process.nextTick callback
   else
     @active = true
-		logger.info "Starting command server"
-		server.listen port
-		logger.info "Listening on port #{port}"
+		log.info "Starting command server"
+		commandServer.listen port
+		log.info "Listening on port #{port}"
 		process.nextTick callback
   return
 
 process.on "exit", ->
 	if @active
-		logger.info "Shutting down command server"
-		server.close()
+		log.info "Shutting down command server"
+		commandServer.close()
 
 wait = ->
   if !@active
@@ -28,19 +34,21 @@ wait = ->
   else
     return
 
-server.ready wait
+commandServer.ready wait
 
 class CommandSink
 	constructor: (@baseUri) ->
 	send: (command, callback) ->
+		uri = @baseUri + "commands"
 		request.post
-			uri: @baseUri + "commands"
+			uri: uri
 			json: command,
-			callback
+			(error, response, body) ->
+				log.info "#{body}"
+				callback(error, response)
 
 client = new CommandSink("http://god:#{port}/")
 
 module.exports =
 	send: (command, callback) ->
-		logger.debug "Sending #{JSON.stringify command}"
 		client.send command, callback

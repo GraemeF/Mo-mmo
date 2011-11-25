@@ -2,7 +2,7 @@
 vows = require 'vows'
 Sinon = require "sinon"
 
-CommandProcessor = require '#{__dirname}/../../lib/app/commandProcessor'
+CommandProcessor = require "../../../lib/app/commandProcessor"
 
 fakeHandler = () ->
 	handle: (command, callback) -> callback null, null

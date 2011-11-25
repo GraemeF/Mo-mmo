@@ -1,2 +1,6 @@
+log = require "../logger"
+log.debug "Loading #{__filename}"
+
 module.exports =
-  require "./commandServer"
+	CommandServer: require "./commandServer"
+	CommandProcessor: require "./commandProcessor"

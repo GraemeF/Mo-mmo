@@ -1,6 +1,8 @@
 {Feature} = require "vows-bdd"
-{Character, Events} = require "./helpers"
+{logger, Character, Events} = require "./helpers"
 vows = require 'vows'
+
+logger.debug "Loading #{__filename}"
 
 Feature("Movement", module)
 	.scenario("Begin moving")

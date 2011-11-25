@@ -1,6 +1,9 @@
 process.env.NODE_ENV = 'test'
 
+log = require "../../../lib/logger"
+log.debug "Loading #{__filename}"
+
 module.exports =
-	logger:			require "#{__dirname}/../../../lib/logger"
+	logger:			log
 	Character:	require "./character_helpers"
 	Events:			require "./events_helpers"
