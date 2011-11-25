@@ -1,4 +1,6 @@
 AddCharacterHandler = require "./addCharacterHandler"
 
+repo = {}
+
 module.exports =
-	addCharacter: -> new AddCharacterHandler()
+	addCharacter: -> new AddCharacterHandler(repo)
