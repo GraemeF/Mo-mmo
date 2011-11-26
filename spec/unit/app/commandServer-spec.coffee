@@ -15,23 +15,27 @@ fakeExpressServer = () ->
 fakeCommandProcessor = () ->
 	stubProcessor = new CommandProcessor()
 	Sinon.stub stubProcessor, "handle"
-	stubProcessor.handle.callsArg 1
 	return stubProcessor
+
+command = null
+processor = null
+postReceiver = null
 
 Feature("commandServer", module)
 	.scenario("Receive a command")
 	.given "a command", ->
-		@command = {name: "foo", data: "bar"}
+		command = {name: "foo", data: "bar"}
 		process.nextTick @callback
 	.and "there is a listening command server", ->
 		server = fakeExpressServer()
-		Sinon.stub server, "post", (path, func) => @postReceiver = func
-		@processor = fakeCommandProcessor()
-		commandServer = new CommandServer(server, @processor)
+		Sinon.stub server, "post", (path, func) => postReceiver = func
+		processor = fakeCommandProcessor()
+		commandServer = new CommandServer(server, processor)
 		commandServer.listen "some port", @callback
 	.when "it receives a POSTed command", ->
-		@postReceiver {body: @command}, @callback
+		postReceiver {body: command}
+		process.nextTick @callback
 	.then "it should hand the command to the processor for processing", ->
-		Sinon.assert.calledWith @processor.handle, @command
+		Sinon.assert.calledWith processor.handle, command
 	.complete()
 	.finish(module)

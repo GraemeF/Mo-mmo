@@ -41,7 +41,8 @@ Feature("CharacterRepository", module)
 		process.nextTick @callback
 
 	.when "I add a character to the repository", ->
-		repo.addCharacter character, @callback
+		repo.addCharacter character
+		process.nextTick @callback
 
 	.then "it should append the uncommitted events to the event store", ->
 		assertSpyWasCalledWithEvents fakeEventStore.append, character.uncommittedEvents

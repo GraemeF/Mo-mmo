@@ -5,9 +5,8 @@ class CharacterRepository
 	constructor: (@eventStore, @domainEvents) ->
 		if !(@eventStore?) then log.warn "missing event store"
 
-	addCharacter: (character, callback) ->
+	addCharacter: (character) ->
 		@eventStore.append character.uncommittedEvents
 		@domainEvents.publish character.uncommittedEvents
-		callback()
 
 module.exports = CharacterRepository

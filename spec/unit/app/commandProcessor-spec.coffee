@@ -12,7 +12,7 @@ processor = null
 thrownError = null
 
 fooHandler =
-	handle: (command, callback) -> callback null, null
+	handle: (command) ->
 
 fooHandlerFactory =
 	createHandler: () -> fooHandler
@@ -35,7 +35,8 @@ Feature("commandProcessor", module)
 		process.nextTick @callback
 
 	.when "it is asked to handle a command", ->
-		processor.handle fooCommand, @callback
+		processor.handle fooCommand
+		process.nextTick @callback
 
 	.then "it should create the appropriate handler", ->
 		Sinon.assert.called fooHandlerFactory.createHandler
@@ -52,12 +53,13 @@ Feature("commandProcessor", module)
 		assert.isEmpty processor.handlerFactories
 		process.nextTick @callback
 
-	.when "it is asked to handle a command", ->
-		myCallback = @callback
-		processor.handle fooCommand, (error) ->
+	.when "it is asked to handle an unknown command", ->
+		try
+			processor.handle fooCommand
+		catch error
 			log.warn error
 			thrownError = error
-			myCallback()
+		process.nextTick @callback
 
 	.then "it should throw an error", ->
 		assert.equal thrownError, "There is no registered handler for 'foo' commands."

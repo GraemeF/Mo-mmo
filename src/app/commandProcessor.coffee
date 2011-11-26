@@ -4,12 +4,12 @@ class CommandProcessor
 	constructor: ->
 		@handlerFactories = {}
 
-	handle: (command, callback) ->
+	handle: (command) ->
 		factory = @handlerFactories[command.name];
 		if factory?
 			handler = factory.createHandler()
-			handler.handle command, callback
+			handler.handle command
 		else
-			callback "There is no registered handler for '#{command.name}' commands."
+			throw "There is no registered handler for '#{command.name}' commands."
 
 module.exports = CommandProcessor

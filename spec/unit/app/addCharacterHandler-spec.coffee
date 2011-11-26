@@ -7,14 +7,15 @@ Sinon = require "sinon"
 AddCharacterHandler = require "../../../lib/app/addCharacterHandler"
 
 fakeRepo = ->
-	addCharacter: (character, callback) -> callback()
+	addCharacter: (character) ->
+repo = null
 
 Feature("addCharacterHandler", module)
 	.scenario("Add a new character")
 
 	.given "an empty character repository", ->
-		@repo = fakeRepo()
-		Sinon.spy @repo, "addCharacter"
+		repo = fakeRepo()
+		Sinon.spy repo, "addCharacter"
 		process.nextTick @callback
 
 	.and "an add character command", ->
@@ -26,15 +27,16 @@ Feature("addCharacterHandler", module)
 		process.nextTick @callback
 
 	.and "an AddCharacterHandler", ->
-		@handler = new AddCharacterHandler(@repo)
+		@handler = new AddCharacterHandler(repo)
 		process.nextTick @callback
 
 	.when "I handle the addCharacter command", ->
-		@handler.handle @command, @callback
+		@handler.handle @command
+		process.nextTick @callback
 
 	.then "it should add a new character to the repository", ->
-		Sinon.assert.called @repo.addCharacter
-		call = @repo.addCharacter.getCall 0
+		Sinon.assert.called repo.addCharacter
+		call = repo.addCharacter.getCall 0
 		addedCharacter = call.args[0]
 		assert.equal addedCharacter.name, "bob"
 		assert.equal addedCharacter.id, 1

@@ -15,6 +15,7 @@ Feature("DomainEvents", module)
 	.given "domain events", ->
 		domainEvents = new DomainEvents()
 		process.nextTick @callback
+
 	.and "I am subscribed to the foo event", ->
 		listener = new sinon.spy()
 		domainEvents.on "foo", listener

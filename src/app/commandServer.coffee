@@ -12,7 +12,7 @@ class CommandServer
 		theProcessor = @processor
 		@server.post '/commands', (req, res) ->
 			log.debug "Received command #{JSON.stringify req.body}"
-			theProcessor.handle req.body, @callback
+			theProcessor.handle req.body
 		@server.listen port, callback
 
 module.exports = CommandServer
