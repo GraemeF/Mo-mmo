@@ -6,7 +6,7 @@ character =
 	move: (characterId, offset, callback) ->
 		command.send
 			name: "move character"
-			commandData:
+			data:
 				id: characterId
 				offset: offset
 			callback
@@ -14,7 +14,7 @@ character =
 	create: (characterId, callback) ->
 		command.send
 			name: "addCharacter"
-			commandData:
+			data:
 				id: characterId
 			callback
 		return

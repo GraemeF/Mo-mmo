@@ -7,14 +7,15 @@ Mommo = require "../../../lib"
 log.debug "Loading #{__filename}"
 server = express.createServer()
 
-eventStore = Mommo.Domain.eventStore
+eventStore = Mommo.Domain.EventStore
 domainEvents = {}
 characterRepo = new Mommo.App.CharacterRepository eventStore, domainEvents
 commandProcessor = new Mommo.App.CommandProcessor()
 
-commandProcessor.handlerFactories.addCharacter = new Mommo.App.AddCharacterHandler(characterRepo)
+commandProcessor.handlerFactories.addCharacter =
+	createHandler: -> new Mommo.App.AddCharacterHandler characterRepo
 
-commandServer = new Mommo.App.CommandServer(server, commandProcessor)
+commandServer = new Mommo.App.CommandServer server, commandProcessor
 
 port = 3003
 
