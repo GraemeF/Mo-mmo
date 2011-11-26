@@ -8,7 +8,7 @@ log.debug "Loading #{__filename}"
 server = express.createServer()
 
 eventStore = new Mommo.Domain.InMemoryEventStore()
-domainEvents = {}
+domainEvents = new Mommo.Domain.DomainEvents()
 characterRepo = new Mommo.App.CharacterRepository eventStore, domainEvents
 commandProcessor = new Mommo.App.CommandProcessor()
 
