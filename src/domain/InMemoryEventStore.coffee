@@ -1,9 +1,12 @@
 log = require "../logger"
 log.debug "Loading #{__filename}"
 
-class EventStore
-	append: (id, event) ->
+class InMemoryEventStore
+	constructor: ->
+		@events = []
 
-theEventStore = new EventStore()
+	append: (newEvents) ->
+		for event in newEvents
+			@events.push event
 
-module.exports = theEventStore
+module.exports = InMemoryEventStore

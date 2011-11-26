@@ -3,4 +3,4 @@ log.debug "Loading #{__filename}"
 
 module.exports =
 	Character: require "./Character"
-	EventStore: require "./InMemoryEventStore"
+	InMemoryEventStore: require "./InMemoryEventStore"
