@@ -21,7 +21,7 @@ Feature("DomainEvents", module)
 		process.nextTick @callback
 
 	.when "I publish a foo event", ->
-		domainEvents.publish {name: "foo", data: eventData}
+		domainEvents.publish [{name: "foo", data: eventData}]
 		process.nextTick @callback
 
 	.then "the listener should be called with the event data", ->
