@@ -23,19 +23,24 @@ postReceiver = null
 
 Feature("commandServer", module)
 	.scenario("Receive a command")
+
 	.given "a command", ->
 		command = {name: "foo", data: "bar"}
 		process.nextTick @callback
+
 	.and "there is a listening command server", ->
 		server = fakeExpressServer()
 		Sinon.stub server, "post", (path, func) => postReceiver = func
 		processor = fakeCommandProcessor()
 		commandServer = new CommandServer(server, processor)
 		commandServer.listen "some port", @callback
+
 	.when "it receives a POSTed command", ->
-		postReceiver {body: command}
+		postReceiver { body: command }, { end: -> }
 		process.nextTick @callback
+
 	.then "it should hand the command to the processor for processing", ->
 		Sinon.assert.calledWith processor.handle, command
+
 	.complete()
 	.finish(module)

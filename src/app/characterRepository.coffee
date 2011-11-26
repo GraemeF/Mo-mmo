@@ -6,6 +6,7 @@ class CharacterRepository
 		if !(@eventStore?) then log.warn "missing event store"
 
 	addCharacter: (character) ->
+		log.debug "Adding #{JSON.stringify character} to the repository."
 		@eventStore.append character.uncommittedEvents
 		@domainEvents.publish character.uncommittedEvents
 

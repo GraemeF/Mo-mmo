@@ -26,5 +26,4 @@ class Character
 		@name = data.name
 		@id = data.id
 
-
 module.exports = Character
