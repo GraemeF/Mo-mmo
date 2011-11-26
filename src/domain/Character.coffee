@@ -5,6 +5,7 @@ class Character
 
 	constructor: (id, name) ->
 		log.info "Constructing new character (#{id}: #{name})"
+		@uncommittedEvents = []
 		event =
 			name: "characterCreated"
 			data:
@@ -12,8 +13,6 @@ class Character
 				name: name
 		@apply [event]
 		@append [event]
-
-	uncommittedEvents: []
 
 	append: (events) ->
 		for event in events

@@ -1,11 +1,15 @@
 logger = require '../logger'
 
 class CommandProcessor
-	handle: (command, callback) ->
-		logger.debug "Handling #{command.name}"
-		handler = @handlerFactories[command.name].createHandler()
-		handler.handle command, callback
+	constructor: ->
+		@handlerFactories = {}
 
-	handlerFactories: {}
+	handle: (command, callback) ->
+		factory = @handlerFactories[command.name];
+		if factory?
+			handler = factory.createHandler()
+			handler.handle command, callback
+		else
+			callback "There is no registered handler for '#{command.name}' commands."
 
 module.exports = CommandProcessor

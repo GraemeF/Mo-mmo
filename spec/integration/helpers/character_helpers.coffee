@@ -13,7 +13,7 @@ character =
 		return
 	create: (characterId, callback) ->
 		command.send
-			name: "create character"
+			name: "addCharacter"
 			commandData:
 				id: characterId
 			callback

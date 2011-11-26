@@ -8,6 +8,4 @@ class AddCharacterHandler
 		character = new Character command.data.id, command.data.name
 		@characterRepo.addCharacter character, callback
 
-	handlerFactories: {}
-
 module.exports = AddCharacterHandler

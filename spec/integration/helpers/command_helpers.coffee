@@ -7,7 +7,13 @@ Mommo = require "../../../lib"
 log.debug "Loading #{__filename}"
 server = express.createServer()
 
+eventStore = Mommo.Domain.eventStore
+domainEvents = {}
+characterRepo = new Mommo.App.CharacterRepository eventStore, domainEvents
 commandProcessor = new Mommo.App.CommandProcessor()
+
+commandProcessor.handlerFactories.addCharacter = new Mommo.App.AddCharacterHandler(characterRepo)
+
 commandServer = new Mommo.App.CommandServer(server, commandProcessor)
 
 port = 3003
@@ -17,9 +23,8 @@ commandServer.ready = (callback) ->
     process.nextTick callback
   else
     @active = true
-		log.info "Starting command server"
 		commandServer.listen port
-		log.info "Listening on port #{port}"
+		log.info "Command server listening on port #{port}"
 		process.nextTick callback
   return
 
