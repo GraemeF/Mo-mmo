@@ -11,11 +11,12 @@ character =
 				offset: offset
 			callback
 		return
-	create: (characterId, callback) ->
+	create: (id, name, callback) ->
 		command.send
 			name: "addCharacter"
 			data:
-				id: characterId
+				id: id
+				name: name
 			callback
 		return
 

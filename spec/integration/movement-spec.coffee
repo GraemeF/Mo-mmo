@@ -7,11 +7,11 @@ logger.debug "Loading #{__filename}"
 Feature("Movement", module)
 	.scenario("Begin moving")
 	.given "I have a new character", ->
-		Character.create "bob", @callback
+		Character.create 1, "bob", @callback
 	.when "I move to 10, 0, 0", ->
-		Character.move "bob", {x: 10}, @callback
+		Character.move 1, {x: 10}, @callback
 	.then "my character should begin moving", ->
-		Events.characterShouldBeginMoving "bob", @callback
+		Events.characterShouldBeginMoving 1, @callback
 	.complete()
 
 #	.scenario("Move away from a tree")
