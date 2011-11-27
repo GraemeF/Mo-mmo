@@ -1,22 +1,22 @@
-command = require "./command_helpers"
+commandClient = require "./command_helpers"
 log = require '../../../lib/logger'
 
 character =
 	move: (characterId, offset, callback) ->
-		command.send
+		command =
 			name: "move character"
 			data:
 				id: characterId
-				offset: offset
-			callback
+				offset: offset,
+		commandClient.send command, callback
 		return
 	create: (id, name, callback) ->
-		command.send
+		command =
 			name: "addCharacter"
 			data:
 				id: id
 				name: name
-			callback
+		commandClient.send command, callback
 		return
 
 module.exports = character

@@ -11,13 +11,14 @@ eventServer.publishDomainEvents()
 
 class EventSource
 	connect: (baseUri) ->
-		uri = baseUri + "commands"
+		uri = baseUri + ""
 		log.info "Client connecting to #{uri}"
-		@socket = ioClient.connect uri
-		@socket.on "connect", () -> log.info "Client connected to server"
+		@socket = ioClient.connect uri, (socket) ->
+			log.info "Client connected to server"
 	subscribe: (eventName, handler) ->
 		log.debug "socket.io client subscribing to #{eventName}"
 		@socket.on eventName, handler
+		log.debug "socket.io client subscribed to #{eventName}"
 
 client = new EventSource()
 active = false
@@ -36,23 +37,27 @@ eventServer.ready = (callback) ->
 
 process.on "exit", ->
 	if active
-		log.info "Shutting down command server"
-		commandServer.close()
+		log.info "Shutting down event server"
+		eventServer.close()
 
-wait = ->
+wait = (callback) ->
 	log.debug "wait"
 	if !active
 		log.debug "wait - not active"
 		process.nextTick wait
 	else
 		log.debug "wait - active"
-		return
+		process.nextTick(callback)
+	return
 
-eventServer.ready wait
+
+#eventServer.ready wait
 
 module.exports =
 	subscribe: (eventName, handler) ->
 		client.subscribe eventName, handler
+	connectClientToServer: (callback) ->
+		eventServer.ready (() -> wait callback)
 	waitFor: (condition, retries, callback) ->
 		if retries < 0
 			process.nextTick callback("Condition was not met.", condition)
