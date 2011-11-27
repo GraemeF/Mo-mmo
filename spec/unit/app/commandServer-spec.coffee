@@ -36,7 +36,7 @@ Feature("commandServer", module)
 		commandServer.listen "some port", @callback
 
 	.when "it receives a POSTed command", ->
-		postReceiver { body: command }, { end: -> }
+		postReceiver { body: command }, { send: new Sinon.spy() }
 		process.nextTick @callback
 
 	.then "it should hand the command to the processor for processing", ->

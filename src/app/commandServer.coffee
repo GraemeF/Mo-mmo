@@ -13,7 +13,7 @@ class CommandServer
 			if req.connection? then req.connection.setTimeout 1000
 			log.debug "Received command.", req.body
 			theProcessor.handle req.body
-			res.end()
+			res.send 201
 		@server.listen port, callback
 
 module.exports = CommandServer
