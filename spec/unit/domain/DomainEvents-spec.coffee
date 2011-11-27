@@ -18,7 +18,7 @@ Feature("DomainEvents", module)
 
 	.and "I am subscribed to the foo event", ->
 		listener = new sinon.spy()
-		domainEvents.on "foo", listener
+		domainEvents.subscribe "foo", listener
 		process.nextTick @callback
 
 	.when "I publish a foo event", ->
