@@ -8,9 +8,11 @@ class DomainEvents
 	publish: (publishedEvents) ->
 		log.debug "Publishing events.", publishedEvents
 		for event in publishedEvents
+			log.debug "DomainEvents emitting", event
 			@emitter.emit event.name, event.data
 
 	subscribe: (eventName, handler) ->
+		log.debug "Subscribing to #{eventName}."
 		@emitter.on eventName, handler
 
 module.exports = DomainEvents

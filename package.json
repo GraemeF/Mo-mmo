@@ -12,6 +12,7 @@
     "dependencies":{
         "winston":"",
         "socket.io":"",
+        "socket.io-client":"",
         "express":""
     },
     "devDependencies":{

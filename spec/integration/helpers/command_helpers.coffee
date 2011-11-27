@@ -62,3 +62,4 @@ client = new CommandSink("http://god:#{port}/")
 module.exports =
 	send: (command, callback) ->
 		client.send command, callback
+	domainEvents: domainEvents
