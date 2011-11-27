@@ -1,47 +1,65 @@
 log = require '../../../lib/logger'
 Mommo = require "../../../lib"
-ioServer = require "socket.io"
+io = require "socket.io"
 ioClient = require "socket.io-client"
 commandServer = require './command_helpers'
 
+ioServer = io.listen commandServer.server
 eventServer = new Mommo.App.EventServer ioServer, commandServer.domainEvents
 
-port = 3004
-
-eventServer.ready = (callback) ->
-  if @active
-    process.nextTick callback
-  else
-    @active = true
-		eventServer.listen port
-		log.info "Event server listening on port #{port}"
-		process.nextTick callback
-  return
-
-process.on "exit", ->
-	if @active
-		log.info "Shutting down event server"
-		eventServer.close()
-
-wait = ->
-  if !@active
-    process.nextTick wait
-  else
-    return
-
-eventServer.ready wait
+eventServer.publishDomainEvents()
 
 class EventSource
-	connect: (@baseUri) ->
-		uri = @baseUri + "commands"
+	connect: (baseUri) ->
+		uri = baseUri + "commands"
+		log.info "Client connecting to #{uri}"
 		@socket = ioClient.connect uri
+		@socket.on "connect", () -> log.info "Client connected to server"
 	subscribe: (eventName, handler) ->
-		log.debug "Subscribing to #{eventName}"
+		log.debug "socket.io client subscribing to #{eventName}"
 		@socket.on eventName, handler
 
-client = new EventSource("http://god:#{port}/")
-client.connect()
+client = new EventSource()
+active = false
+
+eventServer.ready = (callback) ->
+	log.debug "ready"
+	if active
+		log.debug "ready - active"
+		process.nextTick callback
+	else
+		log.debug "ready - not active"
+		active = true
+		client.connect("http://god:#{commandServer.port}/")
+		eventServer.waitForConnection(callback)
+	return
+
+process.on "exit", ->
+	if active
+		log.info "Shutting down command server"
+		commandServer.close()
+
+wait = ->
+	log.debug "wait"
+	if !active
+		log.debug "wait - not active"
+		process.nextTick wait
+	else
+		log.debug "wait - active"
+		return
+
+eventServer.ready wait
 
 module.exports =
 	subscribe: (eventName, handler) ->
 		client.subscribe eventName, handler
+	waitFor: (condition, retries, callback) ->
+		if retries < 0
+			process.nextTick callback("Condition was not met.", condition)
+		else
+			if condition()
+				log.debug "PASS"
+				process.nextTick callback
+			else
+				log.debug "RETRY #{retries}"
+				process.nextTick () => @waitFor(condition, retries-1, callback)

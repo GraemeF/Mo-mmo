@@ -63,3 +63,5 @@ module.exports =
 	send: (command, callback) ->
 		client.send command, callback
 	domainEvents: domainEvents
+	server: server
+	port: port

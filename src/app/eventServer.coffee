@@ -4,11 +4,19 @@ log = require '../logger'
 allEvents = ['characterCreated']
 
 class EventServer
-	constructor: (@io, @domainEvents) ->
+	constructor: (@server, @domainEvents) ->
+		@hasConnection = false
+		@server.sockets.on "connection", (socket) =>
+			log.info "Connection established"
+			@hasConnection = true
 
-	listen: (port) ->
-		@server = @io.listen port
+	waitForConnection: (callback) ->
+		if !@hasConnection
+			process.nextTick ()=>@waitForConnection(callback)
+		else
+			callback()
 
+	publishDomainEvents: ->
 		for eventName in allEvents
 			@domainEvents.subscribe eventName, (data) =>
 				log.debug "EventServer emitting #{eventName}", data

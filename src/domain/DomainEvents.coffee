@@ -12,7 +12,7 @@ class DomainEvents
 			@emitter.emit event.name, event.data
 
 	subscribe: (eventName, handler) ->
-		log.debug "Subscribing to #{eventName}."
+		log.debug "Subscribing to DomainEvent #{eventName}."
 		@emitter.on eventName, handler
 
 module.exports = DomainEvents
