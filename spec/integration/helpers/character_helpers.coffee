@@ -1,6 +1,5 @@
 command = require "./command_helpers"
 log = require '../../../lib/logger'
-log.debug "Loading #{__filename}"
 
 character =
 	move: (characterId, offset, callback) ->

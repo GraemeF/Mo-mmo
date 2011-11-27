@@ -2,8 +2,6 @@
 {logger, Character, Events} = require "./helpers"
 vows = require 'vows'
 
-logger.debug "Loading #{__filename}"
-
 Feature("Movement", module)
 	.scenario("Begin moving")
 	.given "I have a new character", ->

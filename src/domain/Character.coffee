@@ -1,10 +1,8 @@
 log = require "../logger"
-log.debug "Loading #{__filename}"
 
 class Character
 
 	constructor: (id, name) ->
-		log.info "Constructing new character (#{id}: #{name})"
 		@uncommittedEvents = []
 		event =
 			name: "characterCreated"

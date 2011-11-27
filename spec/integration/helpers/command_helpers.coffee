@@ -4,7 +4,6 @@ request = require 'request'
 log = require "../../../lib/logger"
 Mommo = require "../../../lib"
 
-log.debug "Loading #{__filename}"
 server = express.createServer()
 
 eventStore = new Mommo.Domain.InMemoryEventStore()
@@ -50,7 +49,12 @@ class CommandSink
 			uri: uri
 			json: command,
 			(error, response, body) ->
-				log.info "#{body}"
+				if !(error?)
+					if response.statusCode != 201
+						error = body
+
+				if error? then log.error "There was a problem sending a command.", error
+
 				callback(error, response)
 
 client = new CommandSink("http://god:#{port}/")

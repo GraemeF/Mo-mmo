@@ -57,7 +57,6 @@ Feature("commandProcessor", module)
 		try
 			processor.handle fooCommand
 		catch error
-			log.warn error
 			thrownError = error
 		process.nextTick @callback
 
