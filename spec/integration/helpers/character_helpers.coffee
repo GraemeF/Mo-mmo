@@ -17,6 +17,12 @@ character =
 				id: id
 				name: name
 		commandClient.send command, callback
+	delete: (id, callback) ->
+		command =
+			name: "deleteCharacter"
+			data:
+				id: id
+		commandClient.send command, callback
 		return
 
 module.exports = character

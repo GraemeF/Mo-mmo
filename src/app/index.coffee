@@ -6,3 +6,4 @@ module.exports =
 	CommandProcessor: require "./commandProcessor"
 	CharacterRepository: require "./characterRepository"
 	AddCharacterHandler: require "./addCharacterHandler"
+	DeleteCharacterHandler: require "./deleteCharacterHandler"

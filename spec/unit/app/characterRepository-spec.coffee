@@ -6,10 +6,14 @@ Sinon = require "sinon"
 
 CharacterRepository = require "../../../lib/app/characterRepository"
 
+class FakeCharacter
+	constructor: (@id, @events) ->
+
 fakeEventStore = null
 repo = null
 character = null
 domainEvents = null
+someEvents = null
 
 assertSpyWasCalledWithEvents = (spy, expectedEvents) ->
 	Sinon.assert.called spy
@@ -49,6 +53,35 @@ Feature("CharacterRepository", module)
 
 	.and "it should publish the events", ->
 		assertSpyWasCalledWithEvents domainEvents.publish, character.uncommittedEvents
+
+	.complete()
+
+	.scenario("Get a character")
+
+	.given "an event store with an event", ->
+		someEvents = [{name: "some event", data: "some data"}]
+		character = null
+		fakeEventStore =
+			append: Sinon.spy()
+			events: someEvents
+		process.nextTick @callback
+
+	.and "domain events", ->
+		domainEvents =
+			publish: Sinon.spy()
+		process.nextTick @callback
+
+	.and "a character repository", ->
+		repo = new CharacterRepository(fakeEventStore, domainEvents, FakeCharacter)
+		process.nextTick @callback
+
+	.when "I get a character from the repository", ->
+		character = repo.getCharacter 1
+		process.nextTick @callback
+
+	.then "it should get a character with the loaded events", ->
+		assert.equal character.id, 1
+		assert.equal character.events, someEvents
 
 	.complete()
 	.finish(module)

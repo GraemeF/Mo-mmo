@@ -1,7 +1,7 @@
 util = require "util"
 log = require '../logger'
 
-allEvents = ['characterCreated']
+allEvents = ['characterCreated', 'characterDeleted']
 
 class EventServer
 	constructor: (@server, @domainEvents) ->
@@ -11,15 +11,17 @@ class EventServer
 
 	waitForConnection: (callback) ->
 		if !@hasConnection
-			process.nextTick ()=>@waitForConnection(callback)
+			process.nextTick => @waitForConnection(callback)
 		else
 			callback()
 
+	publishDomainEvent: (eventName) ->
+		@domainEvents.subscribe eventName, (data) =>
+			log.debug "EventServer emitting #{eventName}", data
+			@server.sockets.emit eventName, data
+
 	publishDomainEvents: ->
-		theServer = @server
 		for eventName in allEvents
-			@domainEvents.subscribe eventName, (data) =>
-				log.debug "EventServer emitting #{eventName}", data
-				theServer.sockets.emit eventName, data
+			@publishDomainEvent eventName
 
 module.exports = EventServer

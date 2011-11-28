@@ -12,6 +12,14 @@ class Character
 		@apply [event]
 		@append [event]
 
+	delete: ->
+		event =
+			name: "characterDeleted"
+			data:
+				id: @id
+		@apply [event]
+		@append [event]
+
 	append: (events) ->
 		for event in events
 			@uncommittedEvents.push event
@@ -23,5 +31,8 @@ class Character
 	apply_characterCreated: (data) ->
 		@name = data.name
 		@id = data.id
+
+	apply_characterDeleted: (data) ->
+		@deleted = true
 
 module.exports = Character

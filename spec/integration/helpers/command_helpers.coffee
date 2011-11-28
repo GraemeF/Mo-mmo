@@ -13,6 +13,8 @@ commandProcessor = new Mommo.App.CommandProcessor()
 
 commandProcessor.handlerFactories.addCharacter =
 	createHandler: -> new Mommo.App.AddCharacterHandler characterRepo
+commandProcessor.handlerFactories.deleteCharacter =
+	createHandler: -> new Mommo.App.DeleteCharacterHandler characterRepo
 
 commandServer = new Mommo.App.CommandServer server, commandProcessor
 
