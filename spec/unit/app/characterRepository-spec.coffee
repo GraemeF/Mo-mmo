@@ -8,7 +8,7 @@ Sinon = require "sinon"
 CharacterRepository = require "../../../lib/app/characterRepository"
 
 class FakeCharacter
-	constructor: (@id, @events) ->
+	constructor: (@events) ->
 
 repo = null
 character = null
@@ -111,7 +111,6 @@ Feature("CharacterRepository", module)
 		@callback()
 
 	.then "it should get a character with the loaded events", ->
-		assert.equal character.id, 1
 		assert.equal character.events, eventsInStore
 
 	.complete()

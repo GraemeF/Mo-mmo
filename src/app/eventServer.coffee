@@ -17,7 +17,6 @@ class EventServer
 
 	publishDomainEvent: (eventName) ->
 		@domainEvents.subscribe eventName, (data) =>
-			log.debug "EventServer emitting #{eventName}", data
 			@server.sockets.emit eventName, data
 
 	publishDomainEvents: ->

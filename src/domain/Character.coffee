@@ -2,15 +2,18 @@ log = require "../logger"
 
 class Character
 
-	constructor: (id, name) ->
+	constructor: (idOrEvents, name) ->
 		@uncommittedEvents = []
-		event =
-			name: "characterCreated"
-			data:
-				id: id
-				name: name
-		@apply [event]
-		@append [event]
+		if Array.isArray idOrEvents
+			@apply idOrEvents
+		else
+			event =
+				name: "characterCreated"
+				data:
+					id: idOrEvents
+					name: name
+			@apply [event]
+			@append [event]
 
 	delete: ->
 		event =

@@ -11,7 +11,6 @@ class CommandServer
 		theProcessor = @processor
 		@server.post '/commands', (req, res) ->
 			if req.connection? then req.connection.setTimeout 1000
-			log.debug "Received command.", req.body
 			theProcessor.handle req.body
 			res.send 201
 		@server.listen port, callback

@@ -1,3 +1,4 @@
+util = require "util"
 log = require "../logger"
 
 class InMemoryEventStore
@@ -5,7 +6,6 @@ class InMemoryEventStore
 		@events = []
 
 	append: (newEvents) ->
-		log.debug "Appending events to the event store.", newEvents
 		for event in newEvents
 			@events.push event
 

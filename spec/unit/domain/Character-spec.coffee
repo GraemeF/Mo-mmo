@@ -37,4 +37,26 @@ Feature("Character", module)
 		assert.equal event.data.id, 1
 
 	.complete()
+
+	.scenario("Load a character from events")
+
+	.given "a characterCreated event", ->
+		@events =
+				[
+					name:"characterCreated"
+					data:
+						id: 1
+						name: "bob"
+				]
+		@callback()
+
+	.when "I create a character with the event", ->
+		@character = new Character @events
+		@callback()
+
+	.then "the character should have the name and id from the event", ->
+		assert.equal @character.name, "bob"
+		assert.equal @character.id, 1
+
+	.complete()
 	.finish(module)
