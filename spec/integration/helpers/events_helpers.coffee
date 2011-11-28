@@ -11,7 +11,7 @@ ioServer.configure () ->
 
 ioServer.configure 'test', () ->
 	ioServer.set('transports', ['xhr-polling'])
-	ioServer.enable('log')
+	ioServer.disable('log')
 
 eventServer = new Mommo.App.EventServer ioServer, commandServer.domainEvents
 

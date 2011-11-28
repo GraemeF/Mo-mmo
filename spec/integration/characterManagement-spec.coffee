@@ -5,24 +5,46 @@ assert = require 'assert'
 
 receivedEvents = null
 
+IHaveConnectedToTheServer = ->
+	[
+		"I have connected to the server",
+		->
+			receivedEvents = {}
+			Events.connectClientToServer @callback
+	]
+
+ICreateCharacter_Named_ = (id, name) ->
+	[
+		"I create character #{id} named '#{name}'",
+		->
+			Character.create 1, "bob", @callback
+	]
+
+IAmSubscribedTo_Events = (eventName) ->
+	[
+		"I am subscribed to #{eventName} events",
+		->
+			receivedEvents[eventName] = []
+			Events.subscribe eventName, (data) ->
+				receivedEvents[eventName].push data
+			process.nextTick @callback
+	]
+
+IShouldReceiveACharacterCreatedEventForCharacter_Named_ = (id, name) ->
+	[
+		"I should receive a character created event for character #{id} named '#{name}'",
+		->
+			event = receivedEvents.characterCreated[0]
+			assert.equal event.id, id
+			assert.equal event.name, name
+	]
+
 Feature("Character management", module)
 	.scenario("Create a new character")
-	.given "we have not received any events", ->
-		receivedEvents = []
-		process.nextTick @callback
-	.and "the event client has connected to the server", ->
-		Events.connectClientToServer @callback
-	.and "I am watching for character 1 to be created", ->
-		Events.subscribe "characterCreated", (data) ->
-			receivedEvents.push data
-		process.nextTick @callback
-	.when "I create a new character", ->
-		Character.create 1, "bob", @callback
-	.and "I wait for the event", ->
-		Events.waitFor (() -> receivedEvents.length > 0), 20, @callback
-	.then "a characterCreated event should be published", ->
-		assert.equal receivedEvents[0].id, 1
-		assert.equal receivedEvents[0].name, 'bob'
+	.given(IHaveConnectedToTheServer())
+	.and(IAmSubscribedTo_Events "characterCreated")
+	.when(ICreateCharacter_Named_ 1, 'bob')
+	.then(IShouldReceiveACharacterCreatedEventForCharacter_Named_ 1, 'bob')
 	.complete()
 
 	.finish module
