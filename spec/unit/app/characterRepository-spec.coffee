@@ -1,3 +1,4 @@
+util = require "util"
 log = require '../../../lib/logger'
 {Feature} = require "vows-bdd"
 vows = require 'vows'
@@ -9,11 +10,41 @@ CharacterRepository = require "../../../lib/app/characterRepository"
 class FakeCharacter
 	constructor: (@id, @events) ->
 
-fakeEventStore = null
 repo = null
 character = null
 domainEvents = null
 someEvents = null
+fakeEventStore = null
+expectedCommits = null
+eventsInStore = null
+
+ACharacterRepository = () ->
+	[
+		"a character repository",
+		->
+			repo = new CharacterRepository(fakeEventStore, domainEvents, FakeCharacter)
+			@callback()
+	]
+ADomainEventsPublisher = () ->
+	[
+		"a domain events publisher",
+		->
+			domainEvents =
+				publish: Sinon.spy()
+			@callback()
+	]
+AnEventStoreWithEvents_ = (events) ->
+	[
+		"an event store with events #{JSON.stringify events}",
+		->
+			character = null
+			eventsInStore = events
+			fakeEventStore =
+				append: Sinon.spy()
+				events: events
+
+			@callback()
+	]
 
 assertSpyWasCalledWithEvents = (spy, expectedEvents) ->
 	Sinon.assert.called spy
@@ -24,64 +55,64 @@ assertSpyWasCalledWithEvents = (spy, expectedEvents) ->
 Feature("CharacterRepository", module)
 	.scenario("Add a new character")
 
-	.given "an empty event store", ->
-		fakeEventStore =
-			append: Sinon.spy()
-		process.nextTick @callback
+	.given(AnEventStoreWithEvents_ [])
+	.and(ADomainEventsPublisher())
+	.and(ACharacterRepository())
+	.and "a character with an uncommitted event", ->
+		expectedCommits = [{name: "some event"}]
+		character =
+			id: 1
+			uncommittedEvents: expectedCommits
+		@callback()
 
-	.and "domain events", ->
-		domainEvents =
-			publish: Sinon.spy()
-		process.nextTick @callback
+	.when "I add a character to the repository", ->
+		repo.storeCharacter character
+		@callback()
 
-	.and "a character repository", ->
-		repo = new CharacterRepository(fakeEventStore, domainEvents)
-		process.nextTick @callback
+	.then "it should append the uncommitted events to the event store", =>
+		assertSpyWasCalledWithEvents fakeEventStore.append, expectedCommits
 
+	.and "it should publish the events", ->
+		assertSpyWasCalledWithEvents domainEvents.publish, expectedCommits
+
+	.complete()
+
+	.scenario("Store a character")
+
+	.given(AnEventStoreWithEvents_ [])
+	.and(ADomainEventsPublisher())
+	.and(ACharacterRepository())
 	.and "a character with an uncommitted event", ->
 		character =
 			id: 1
-			uncommittedEvents: [{name: "some event"}]
-		process.nextTick @callback
+			uncommittedEvents: expectedCommits
+		@callback()
 
-	.when "I add a character to the repository", ->
-		repo.addCharacter character
-		process.nextTick @callback
+	.when "I store a character to the repository", ->
+		repo.storeCharacter character
+		@callback()
 
-	.then "it should append the uncommitted events to the event store", ->
-		assertSpyWasCalledWithEvents fakeEventStore.append, character.uncommittedEvents
-
+	.then "it should append the uncommitted events to the event store", =>
+		assertSpyWasCalledWithEvents fakeEventStore.append, expectedCommits
 	.and "it should publish the events", ->
-		assertSpyWasCalledWithEvents domainEvents.publish, character.uncommittedEvents
+		assertSpyWasCalledWithEvents domainEvents.publish, expectedCommits
+	.and "it should clear the uncommitted events", ->
+		assert.isEmpty character.uncommittedEvents
 
 	.complete()
 
 	.scenario("Get a character")
 
-	.given "an event store with an event", ->
-		someEvents = [{name: "some event", data: "some data"}]
-		character = null
-		fakeEventStore =
-			append: Sinon.spy()
-			events: someEvents
-		process.nextTick @callback
-
-	.and "domain events", ->
-		domainEvents =
-			publish: Sinon.spy()
-		process.nextTick @callback
-
-	.and "a character repository", ->
-		repo = new CharacterRepository(fakeEventStore, domainEvents, FakeCharacter)
-		process.nextTick @callback
-
+	.given(AnEventStoreWithEvents_ [{name: "some event", data: "some data"}])
+	.and(ADomainEventsPublisher())
+	.and(ACharacterRepository())
 	.when "I get a character from the repository", ->
 		character = repo.getCharacter 1
-		process.nextTick @callback
+		@callback()
 
 	.then "it should get a character with the loaded events", ->
 		assert.equal character.id, 1
-		assert.equal character.events, someEvents
+		assert.equal character.events, eventsInStore
 
 	.complete()
 	.finish(module)

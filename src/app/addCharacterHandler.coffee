@@ -6,6 +6,6 @@ class AddCharacterHandler
 
 	handle: (command) ->
 		character = new Character command.data.id, command.data.name
-		@characterRepo.addCharacter character
+		@characterRepo.storeCharacter character
 
 module.exports = AddCharacterHandler

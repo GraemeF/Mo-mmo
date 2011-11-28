@@ -6,5 +6,6 @@ class DeleteCharacterHandler
 	handle: (command) ->
 		character = @characterRepo.getCharacter command.data.id
 		character.delete()
+		@characterRepo.storeCharacter character
 
 module.exports = DeleteCharacterHandler

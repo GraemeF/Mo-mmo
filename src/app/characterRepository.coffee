@@ -3,10 +3,11 @@ log = require "../logger"
 class CharacterRepository
 	constructor: (@eventStore, @domainEvents, @Character = require "../../lib/domain/Character") ->
 
-	addCharacter: (character) ->
-		log.debug "Adding character to the repository.", character
+	storeCharacter: (character) ->
+		log.debug "Storing character in the repository.", character
 		@eventStore.append character.uncommittedEvents
 		@domainEvents.publish character.uncommittedEvents
+		character.uncommittedEvents = []
 
 	getCharacter: (id) ->
 		log.debug "Getting character #{id} from the repository."

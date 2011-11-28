@@ -14,6 +14,7 @@ fakeRepo =
 			fakeCharacter
 		else
 			null
+	storeCharacter: Sinon.spy()
 
 Feature("deleteCharacterHandler", module)
 	.scenario("Delete a character")
@@ -38,6 +39,9 @@ Feature("deleteCharacterHandler", module)
 
 	.then "it should delete the character", ->
 		Sinon.assert.called fakeCharacter.delete
+
+	.and "it should store the character in the repository", ->
+		Sinon.assert.calledWith fakeRepo.storeCharacter, fakeCharacter
 
 	.complete()
 	.finish(module)
