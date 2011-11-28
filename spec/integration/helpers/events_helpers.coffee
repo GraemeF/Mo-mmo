@@ -1,10 +1,10 @@
 log = require '../../../lib/logger'
 Mommo = require "../../../lib"
 io = require "socket.io"
-ioClient = require "../../../node_modules/socket.io/node_modules/socket.io-client"
+ioClient = require "socket.io-client"
 commandServer = require './command_helpers'
 
-ioServer = io.listen 3005
+ioServer = io.listen commandServer.server
 
 ioServer.configure () ->
 	ioServer.disable('log')
@@ -19,27 +19,22 @@ eventServer.publishDomainEvents()
 
 class EventSource
 	connect: (baseUri) ->
-		uri = baseUri + ""
+		uri = baseUri
 		log.info "Client connecting to #{uri}"
 		@socket = ioClient.connect uri, (socket) ->
 			log.info "Client connected to server"
 	subscribe: (eventName, handler) ->
-		log.debug "socket.io client subscribing to #{eventName}"
 		@socket.on eventName, handler
-		log.debug "socket.io client subscribed to #{eventName}"
 
 client = new EventSource()
 active = false
 
 eventServer.ready = (callback) ->
-	log.debug "ready"
 	if active
-		log.debug "ready - active"
 		process.nextTick callback
 	else
-		log.debug "ready - not active"
 		active = true
-		client.connect("http://god:3005/")
+		client.connect "http://god:" + commandServer.port
 		eventServer.waitForConnection(callback)
 	return
 
@@ -49,12 +44,9 @@ process.on "exit", ->
 		eventServer.close()
 
 wait = (callback) ->
-	log.debug "wait"
 	if !active
-		log.debug "wait - not active"
 		process.nextTick wait
 	else
-		log.debug "wait - active"
 		process.nextTick(callback)
 	return
 

@@ -53,13 +53,10 @@ class CommandSink
 				if !(error?)
 					if response.statusCode != 201
 						error = body
-					else
-						log.debug "POST done -", response.statusCode
 
 				if error? then log.error "There was a problem sending a command.", error
 
 				process.nextTick () -> callback(error, response)
-		log.debug "POST initiated"
 
 client = new CommandSink("http://god:#{port}/")
 
