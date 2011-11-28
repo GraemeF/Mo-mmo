@@ -36,10 +36,6 @@ eventServer.ready = (callback) ->
 		eventServer.waitForConnection(callback)
 	return
 
-process.on "exit", ->
-	if active
-		eventServer.close()
-
 wait = (callback) ->
 	if !active
 		process.nextTick wait
@@ -48,6 +44,16 @@ wait = (callback) ->
 	return
 
 module.exports =
+	IAmSubscribedTo: (eventName) ->
+		[
+			"I am subscribed to #{eventName} events",
+			->
+				@receivedEvents[eventName] = []
+				module.exports.subscribe eventName, (data) =>
+					if @receivedEvents[eventName]?
+						@receivedEvents[eventName].push data
+				@callback()
+		]
 	subscribe: (eventName, handler) ->
 		client.subscribe eventName, handler
 	connectClientToServer: (callback) ->

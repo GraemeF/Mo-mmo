@@ -23,6 +23,15 @@ class Character
 		@apply [event]
 		@append [event]
 
+	move: (location) ->
+		event =
+			name: "characterMoved"
+			data:
+				id: @id
+				location: location
+		@apply [event]
+		@append [event]
+
 	append: (events) ->
 		for event in events
 			@uncommittedEvents.push event
@@ -37,5 +46,8 @@ class Character
 
 	apply_characterDeleted: (data) ->
 		@deleted = true
+
+	apply_characterMoved: (data) ->
+		@location = data.location
 
 module.exports = Character
