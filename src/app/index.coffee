@@ -7,3 +7,4 @@ module.exports =
 	CharacterRepository: require "./characterRepository"
 	AddCharacterHandler: require "./addCharacterHandler"
 	DeleteCharacterHandler: require "./deleteCharacterHandler"
+	MoveCharacterHandler: require "./MoveCharacterHandler"
