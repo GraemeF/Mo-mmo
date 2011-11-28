@@ -26,13 +26,11 @@ commandServer.ready = (callback) ->
   else
     @active = true
 		commandServer.listen port
-		log.info "Command server listening on port #{port}"
 		process.nextTick callback
   return
 
 process.on "exit", ->
 	if @active
-		log.info "Shutting down command server"
 		commandServer.close()
 
 wait = ->
@@ -47,7 +45,6 @@ class CommandSink
 	constructor: (@baseUri) ->
 	send: (command, callback) ->
 		uri = @baseUri + "commands"
-		log.debug "POSTing to #{uri} -", command
 		request.post
 			uri: uri
 			json: command,

@@ -20,9 +20,7 @@ eventServer.publishDomainEvents()
 class EventSource
 	connect: (baseUri) ->
 		uri = baseUri
-		log.info "Client connecting to #{uri}"
-		@socket = ioClient.connect uri, (socket) ->
-			log.info "Client connected to server"
+		@socket = ioClient.connect uri
 	subscribe: (eventName, handler) ->
 		@socket.on eventName, handler
 
@@ -40,7 +38,6 @@ eventServer.ready = (callback) ->
 
 process.on "exit", ->
 	if active
-		log.info "Shutting down event server"
 		eventServer.close()
 
 wait = (callback) ->
@@ -60,8 +57,6 @@ module.exports =
 			process.nextTick callback("Condition was not met.", condition)
 		else
 			if condition()
-				log.debug "PASS"
 				process.nextTick callback
 			else
-				log.debug "RETRY #{retries}"
 				process.nextTick () => @waitFor(condition, retries-1, callback)

@@ -5,7 +5,7 @@ task default -depends Test
 
 task IntegrationTests -depends UnitTests { 
   $paths = Get-ChildItem speclib/integration -Recurse -Include *-spec.js | ForEach-Object { Resolve-Path $_.FullName -Relative }
-  exec { vows $paths --spec }
+  exec { vows $paths }
 }
 
 task UnitTests -depends Compile { 

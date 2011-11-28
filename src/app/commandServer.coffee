@@ -6,7 +6,7 @@ class CommandServer
 	constructor: (@server, @processor) ->
 
 	listen: (port, callback) ->
-		@server.use express.logger("dev")
+		#@server.use express.logger("dev")
 		@server.use express.bodyParser()
 		theProcessor = @processor
 		@server.post '/commands', (req, res) ->
