@@ -11,11 +11,11 @@ Feature("InMemoryEventStore", module)
 
 	.given "a new event store", ->
 		store = new InMemoryEventStore()
-		process.nextTick @callback
+		@callback()
 
 	.when "I append an event", ->
 		store.append [{name: "foo", data: "bar"}]
-		process.nextTick @callback
+		@callback()
 
 	.then "the list of events should contain the event", ->
 		event = store.events[0]

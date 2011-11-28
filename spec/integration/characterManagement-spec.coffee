@@ -35,7 +35,7 @@ IAmSubscribedTo_Events = (eventName) ->
 			Events.subscribe eventName, (data) ->
 				if receivedEvents[eventName]?
 					receivedEvents[eventName].push data
-			process.nextTick @callback
+			@callback()
 	]
 
 IShouldReceiveACharacterCreatedEventForCharacter_Named_ = (id, name) ->

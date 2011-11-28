@@ -26,17 +26,17 @@ Feature("commandProcessor", module)
 
 	.given "a command processor", ->
 		processor = new CommandProcessor()
-		process.nextTick @callback
+		@callback()
 
 	.and "there is handler for foo commands", ->
 		Sinon.spy fooHandler, "handle"
 		Sinon.spy fooHandlerFactory, "createHandler"
 		processor.handlerFactories.foo = fooHandlerFactory
-		process.nextTick @callback
+		@callback()
 
 	.when "it is asked to handle a command", ->
 		processor.handle fooCommand
-		process.nextTick @callback
+		@callback()
 
 	.then "it should create the appropriate handler", ->
 		Sinon.assert.called fooHandlerFactory.createHandler
@@ -51,14 +51,14 @@ Feature("commandProcessor", module)
 	.given "a command processor", ->
 		processor = new CommandProcessor()
 		assert.isEmpty processor.handlerFactories
-		process.nextTick @callback
+		@callback()
 
 	.when "it is asked to handle an unknown command", ->
 		try
 			processor.handle fooCommand
 		catch error
 			thrownError = error
-		process.nextTick @callback
+		@callback()
 
 	.then "it should throw an error", ->
 		assert.equal thrownError, "There is no registered handler for 'foo' commands."

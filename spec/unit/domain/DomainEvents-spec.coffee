@@ -14,16 +14,16 @@ Feature("DomainEvents", module)
 
 	.given "domain events", ->
 		domainEvents = new DomainEvents()
-		process.nextTick @callback
+		@callback()
 
 	.and "I am subscribed to the foo event", ->
 		listener = new sinon.spy()
 		domainEvents.subscribe "foo", listener
-		process.nextTick @callback
+		@callback()
 
 	.when "I publish a foo event", ->
 		domainEvents.publish [{name: "foo", data: eventData}]
-		process.nextTick @callback
+		@callback()
 
 	.then "the listener should be called with the event data", ->
 		sinon.assert.called listener

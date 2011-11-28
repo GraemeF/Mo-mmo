@@ -11,7 +11,7 @@ Feature("Character", module)
 
 	.when "I create a new character", ->
 		newChar = new Character 1, "bob"
-		process.nextTick @callback
+		@callback()
 
 	.then "it should add a characterCreated event to the character's uncommitted events", ->
 		event = newChar.uncommittedEvents[0]
@@ -25,11 +25,11 @@ Feature("Character", module)
 
 	.given "I create a new character", ->
 		newChar = new Character 1, "bob"
-		process.nextTick @callback
+		@callback()
 
 	.when "I delete the character", ->
 		newChar.delete()
-		process.nextTick @callback
+		@callback()
 
 	.then "it should add a characterDeleted event to the character's uncommitted events", ->
 		event = newChar.uncommittedEvents[1]

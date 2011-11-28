@@ -26,7 +26,7 @@ Feature("commandServer", module)
 
 	.given "a command", ->
 		command = {name: "foo", data: "bar"}
-		process.nextTick @callback
+		@callback()
 
 	.and "there is a listening command server", ->
 		server = fakeExpressServer()
@@ -37,7 +37,7 @@ Feature("commandServer", module)
 
 	.when "it receives a POSTed command", ->
 		postReceiver { body: command }, { send: new Sinon.spy() }
-		process.nextTick @callback
+		@callback()
 
 	.then "it should hand the command to the processor for processing", ->
 		Sinon.assert.calledWith processor.handle, command
