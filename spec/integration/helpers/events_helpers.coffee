@@ -34,7 +34,7 @@ eventServer.ready = (callback) ->
 		process.nextTick callback
 	else
 		active = true
-		client.connect "http://god:" + commandServer.port
+		client.connect "http://localhost:" + commandServer.port
 		eventServer.waitForConnection(callback)
 	return
 

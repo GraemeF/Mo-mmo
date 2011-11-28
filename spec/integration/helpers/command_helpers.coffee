@@ -58,7 +58,7 @@ class CommandSink
 
 				process.nextTick () -> callback(error, response)
 
-client = new CommandSink("http://god:#{port}/")
+client = new CommandSink("http://localhost:#{port}/")
 
 module.exports =
 	send: (command, callback) ->
