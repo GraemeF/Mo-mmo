@@ -1,10 +1,18 @@
 log = require '../../../lib/logger'
 Mommo = require "../../../lib"
 io = require "socket.io"
-ioClient = require "socket.io-client"
+ioClient = require "../../../node_modules/socket.io/node_modules/socket.io-client"
 commandServer = require './command_helpers'
 
-ioServer = io.listen commandServer.server
+ioServer = io.listen 3005
+
+ioServer.configure () ->
+	ioServer.disable('log')
+
+ioServer.configure 'test', () ->
+	ioServer.set('transports', ['xhr-polling'])
+	ioServer.enable('log')
+
 eventServer = new Mommo.App.EventServer ioServer, commandServer.domainEvents
 
 eventServer.publishDomainEvents()
@@ -31,7 +39,7 @@ eventServer.ready = (callback) ->
 	else
 		log.debug "ready - not active"
 		active = true
-		client.connect("http://god:#{commandServer.port}/")
+		client.connect("http://god:3005/")
 		eventServer.waitForConnection(callback)
 	return
 
@@ -49,9 +57,6 @@ wait = (callback) ->
 		log.debug "wait - active"
 		process.nextTick(callback)
 	return
-
-
-#eventServer.ready wait
 
 module.exports =
 	subscribe: (eventName, handler) ->

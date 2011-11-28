@@ -45,6 +45,7 @@ class CommandSink
 	constructor: (@baseUri) ->
 	send: (command, callback) ->
 		uri = @baseUri + "commands"
+		log.debug "POSTing to #{uri} -", command
 		request.post
 			uri: uri
 			json: command,
@@ -52,10 +53,13 @@ class CommandSink
 				if !(error?)
 					if response.statusCode != 201
 						error = body
+					else
+						log.debug "POST done -", response.statusCode
 
 				if error? then log.error "There was a problem sending a command.", error
 
-				callback(error, response)
+				process.nextTick () -> callback(error, response)
+		log.debug "POST initiated"
 
 client = new CommandSink("http://god:#{port}/")
 
