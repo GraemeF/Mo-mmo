@@ -39,15 +39,22 @@ class Character
 		@append [event]
 		@trackMovement event.data.movement, callback
 
+	vectorsEqual: (a, b) ->
+		a[0] == b[0] && a[1] == b[1] && a[2] == b[2]
+
 	trackMovement: (movement, callback) ->
-		event =
-			name: "characterMoved"
-			data:
-				id: @id
-				location: @Movement.calculateLocation movement, @getTime()
-		@apply [event]
-		@append [event]
-		callback()
+		newLocation = @Movement.calculateLocation movement, @getTime()
+		if !@vectorsEqual newLocation, @location
+			event =
+				name: "characterMoved"
+				data:
+					id: @id
+					location: newLocation
+			@apply [event]
+			@append [event]
+		process.nextTick callback
+		if !@vectorsEqual newLocation, movement.destination
+			process.nextTick () => @trackMovement(movement, callback)
 
 	append: (events) ->
 		for event in events
@@ -60,7 +67,7 @@ class Character
 	apply_characterCreated: (data) ->
 		@name = data.name
 		@id = data.id
-		@movementSpeed = 1
+		@movementSpeed = 6
 		@location = [0, 0, 0]
 
 	apply_characterDeleted: (data) ->

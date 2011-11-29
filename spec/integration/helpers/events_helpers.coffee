@@ -63,6 +63,13 @@ class ReceivedEvents
 			throw new Error "No #{name} events have been received."
 		@events[name][@events[name].length-1]
 
+	getLastOrNull: (name) ->
+		if !@events[name]
+			return null
+		if @events[name].length < 1
+			return null
+		@events[name][@events[name].length-1]
+
 	any: (name) ->
 		@events[name] and @events[name].length > 0
 
@@ -127,8 +134,23 @@ module.exports =
 		[
 			"I wait for a #{name} event",
 			->
-				module.exports.waitFor((=> @receivedEvents.any "characterMoved"), 10, => @callback())
+				module.exports.waitFor((=> @receivedEvents.any name), 10, (e,r) => @callback(e,r))
 		]
+
+	WaitForCharacterToReach_: (location) ->
+		[
+			"I wait for the character to reach #{location}",
+			->
+				module.exports.waitFor((=>
+					event = (@receivedEvents.getLastOrNull "characterMoved")
+					if event
+						return module.exports.vectorsEqual event.location, location
+					else
+						return false), 100000, (e,r) => @callback(e,r))
+		]
+
+	vectorsEqual: (a, b) ->
+		a[0] == b[0] && a[1] == b[1] && a[2] == b[2]
 
 	subscribe: (eventName, handler) ->
 		client.subscribe eventName, handler
@@ -136,7 +158,7 @@ module.exports =
 		eventServer.ready (() -> wait callback)
 	waitFor: (condition, retries, callback) ->
 		if retries < 0
-			process.nextTick callback("Condition was not met.", condition)
+			process.nextTick () -> callback("Condition was not met.", condition)
 		else
 			if condition()
 				process.nextTick callback
