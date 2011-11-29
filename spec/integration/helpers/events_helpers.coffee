@@ -112,6 +112,14 @@ module.exports =
 				assert.deepEqual event.destination, destination
 		]
 
+	ShouldDescribeCharacter_Moved: (id) ->
+		[
+			"I should receive an event saying character #{id} has moved",
+			->
+				event = @receivedEvents.getLast 'characterMoved'
+				assert.equal event.id, id
+		]
+
 	subscribe: (eventName, handler) ->
 		client.subscribe eventName, handler
 	connectClientToServer: (callback) ->

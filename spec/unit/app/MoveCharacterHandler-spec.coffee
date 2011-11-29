@@ -11,7 +11,7 @@ Feature("MoveCharacterHandler", module)
 
 	.given "the repository contains a character at 0,0,0", ->
 		@character =
-			location: {x:0,y:0,z:0}
+			location: [0, 0, 0]
 			move: Sinon.spy()
 
 		@repo =
@@ -25,10 +25,7 @@ Feature("MoveCharacterHandler", module)
 		@callback()
 
 	.and "a command to move character 1 to 10,0,0", ->
-		@targetLocation =
-			x: 10
-			y: 0
-			z: 0
+		@targetLocation = [10, 0, 0]
 		@command =
 			name: "moveCharacter"
 			data:

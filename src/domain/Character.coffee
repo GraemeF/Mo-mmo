@@ -1,8 +1,9 @@
 log = require "../logger"
+Math = require "math"
 
 class Character
 
-	constructor: (idOrEvents, name) ->
+	constructor: (idOrEvents, name, @Movement = require("./Movement"), @now = Date.now) ->
 		@uncommittedEvents = []
 		if Array.isArray idOrEvents
 			@apply idOrEvents
@@ -28,7 +29,20 @@ class Character
 			name: "characterMoving"
 			data:
 				id: @id
-				destination: destination
+				movement:
+					source: @location
+					destination: destination
+					startTime: @now()
+		@apply [event]
+		@append [event]
+		@trackMovement event.data.movement
+
+	trackMovement: (movement) ->
+		event =
+			name: "characterMoved"
+			data:
+				id: @id
+				location: @Movement.calculateLocation movement, @now()
 		@apply [event]
 		@append [event]
 
@@ -43,6 +57,7 @@ class Character
 	apply_characterCreated: (data) ->
 		@name = data.name
 		@id = data.id
+		@location = [0, 0, 0]
 
 	apply_characterDeleted: (data) ->
 		@deleted = true

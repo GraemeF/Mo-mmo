@@ -3,61 +3,90 @@ log = require "../../../lib/logger"
 {Feature} = require "vows-bdd"
 vows = require 'vows'
 assert = require 'assert'
+sinon = require 'sinon'
+util = require 'util'
 
-newChar = null
+EnsureStubsExist = (owner) ->
+	owner.movement or= {calculateLocation: sinon.stub()}
+	owner.now or= sinon.stub()
+
+Character_IsCreatedWithName_ = (id, name) ->
+	[
+		"Character #{id} is created with name #{name}",
+		->
+			EnsureStubsExist this
+			@character = new Character 1, "bob", @movement, @now
+			@callback()
+	]
+
+TheTimeIs_ = (time) ->
+	[
+		"the time is #{time}",
+		->
+			EnsureStubsExist this
+			@now.returns time
+			@callback()
+	]
+
+LocationAt_IsCalculatedAs_ = (time, location) ->
+	[
+		"the location at #{time} is calculated as #{location}",
+		->
+			EnsureStubsExist this
+			@movement.calculateLocation.returns location
+			@callback()
+	]
+
+IMoveTheCharacterTowards_ = (destination) ->
+	[
+		"I move the character towards #{destination}",
+		->
+			@character.move destination
+			@callback()
+	]
 
 Feature("Character", module)
 	.scenario("Create a new character")
-
-	.when "I create a new character", ->
-		newChar = new Character 1, "bob"
-		@callback()
-
+	.when(Character_IsCreatedWithName_ 1, "bob")
 	.then "it should add a characterCreated event to the character's uncommitted events", ->
-		event = newChar.uncommittedEvents[0]
+		event = @character.uncommittedEvents[0]
 		assert.equal event.name, "characterCreated"
 		assert.equal event.data.id, 1
 		assert.equal event.data.name, "bob"
-
 	.complete()
 
 	.scenario("Move a character")
-
-	.given "I create a new character", ->
-		newChar = new Character 1, "bob"
-		@callback()
-
-	.when "I move the character", ->
-		newChar.move {x:1,y:2,z:3}
-		@callback()
-
+	.given(TheTimeIs_ 10000)
+	.and(Character_IsCreatedWithName_ 1, "bob")
+	.and(LocationAt_IsCalculatedAs_ 11000, [4, 5, 6])
+	.when(IMoveTheCharacterTowards_ [1, 2, 3])
+	.and(TheTimeIs_ 11000)
 	.then "it should add a characterMoving event to the character's uncommitted events", ->
-		event = newChar.uncommittedEvents[1]
+		event = @character.uncommittedEvents[1]
 		assert.equal event.name, "characterMoving"
 		assert.equal event.data.id, 1
-		assert.deepEqual event.data.destination, {x:1,y:2,z:3}
-
+		assert.equal event.data.movement.startTime, 10000
+		assert.deepEqual event.data.movement.source, [0, 0, 0]
+		assert.deepEqual event.data.movement.destination, [1, 2, 3]
+	.and "it should add a characterMoved event to the character's uncommitted events", ->
+		event = @character.uncommittedEvents[2]
+		assert.equal event.name, "characterMoved"
+		assert.equal event.data.id, 1
+		assert.deepEqual event.data.location, [4, 5, 6]
 	.complete()
 
 	.scenario("Delete a character")
-
-	.given "I create a new character", ->
-		newChar = new Character 1, "bob"
-		@callback()
-
+	.given(Character_IsCreatedWithName_ 1, "bob")
 	.when "I delete the character", ->
-		newChar.delete()
+		@character.delete()
 		@callback()
-
 	.then "it should add a characterDeleted event to the character's uncommitted events", ->
-		event = newChar.uncommittedEvents[1]
+		event = @character.uncommittedEvents[1]
 		assert.equal event.name, "characterDeleted"
 		assert.equal event.data.id, 1
-
 	.complete()
 
 	.scenario("Load a character from events")
-
 	.given "a characterCreated event", ->
 		@events =
 				[
@@ -67,14 +96,11 @@ Feature("Character", module)
 						name: "bob"
 				]
 		@callback()
-
 	.when "I create a character with the event", ->
 		@character = new Character @events
 		@callback()
-
 	.then "the character should have the name and id from the event", ->
 		assert.equal @character.name, "bob"
 		assert.equal @character.id, 1
-
 	.complete()
 	.finish(module)
