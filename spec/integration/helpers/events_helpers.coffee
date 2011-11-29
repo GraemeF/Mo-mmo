@@ -3,6 +3,7 @@ Mommo = require "../../../lib"
 io = require "socket.io"
 ioClient = require "socket.io-client"
 commandServer = require './command_helpers'
+assert = require 'assert'
 
 ioServer = io.listen commandServer.server
 
@@ -44,16 +45,44 @@ wait = (callback) ->
 	return
 
 module.exports =
-	IAmSubscribedTo: (eventName) ->
+	Named_AreSubscribedTo: (eventName) ->
 		[
-			"I am subscribed to #{eventName} events",
+			"#{eventName} events are subscribed to",
 			->
+				if !@receivedEvents? then @receivedEvents = {}
 				@receivedEvents[eventName] = []
-				module.exports.subscribe eventName, (data) =>
-					if @receivedEvents[eventName]?
-						@receivedEvents[eventName].push data
-				@callback()
+				eventServer.ready =>
+					module.exports.subscribe eventName, (data) =>
+						if @receivedEvents[eventName]?
+							@receivedEvents[eventName].push data
+					@callback()
 		]
+
+	ShouldDescribeTheCreationOfCharacter_Named_: (id, name) ->
+		[
+			"I should receive a character created event for character #{id} named '#{name}'",
+			->
+				event = @receivedEvents.characterCreated[0]
+				assert.equal event.id, id
+				assert.equal event.name, name
+		]
+
+	ShouldDescribeTheDeletionOfCharacter_: (id) ->
+		[
+			"I should receive a character deleted event for character #{id}",
+			->
+				event = @receivedEvents.characterDeleted[0]
+				assert.equal event.id, id
+		]
+
+	ShouldDescribeCharacter_MovingTo_: (id, location) ->
+		[
+			"I should an event saying character #{id} has moved to #{JSON.stringify location}",
+			->
+				event = @receivedEvents.characterMoved[0]
+				assert.equal event.id, id
+		]
+
 	subscribe: (eventName, handler) ->
 		client.subscribe eventName, handler
 	connectClientToServer: (callback) ->
