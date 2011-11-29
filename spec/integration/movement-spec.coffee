@@ -1,14 +1,14 @@
 {Feature} = require "vows-bdd"
-{logger, Character, Events} = require "./helpers"
+{logger, Character, Events, Wait} = require "./helpers"
 vows = require 'vows'
 assert = require 'assert'
 
 Feature("Movement", module)
 	.scenario("Begin moving")
 	.given(Character._IsCreatedWithName_ 1, "bob")
-	.and(Events.Named_AreSubscribedTo "characterMoved")
-	.when(Character._BeginsMovingTo_ 1, {x: 10})
-	.then(Events.ShouldDescribeCharacter_MovingTo_ 1, {x:10,y:0,z:0})
+	.and(Events.Named_AreSubscribedTo "characterMoving")
+	.when(Character._BeginsMovingTo_ 1, {x:10, y:0, z:0})
+	.then(Events.ShouldDescribeCharacter_MovingTowards_ 1, {x:10, y:0, z:0})
 	.complete()
 
 #	.scenario("Move away from a tree")

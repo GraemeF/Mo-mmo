@@ -44,17 +44,36 @@ wait = (callback) ->
 		process.nextTick(callback)
 	return
 
+
+class ReceivedEvents
+	constructor: ->
+		@events = []
+
+	clear: (name) ->
+		@events[name] = []
+
+	add: (name, data) ->
+		if @events[name]?
+			@events[name].push data
+
+	getLast: (name) ->
+		if !@events[name]
+			throw new Error "#{name} events are not being recorded."
+		if @events[name].length < 1
+			throw new Error "No #{name} events have been received."
+		@events[name][@events[name].length-1]
+
+
 module.exports =
 	Named_AreSubscribedTo: (eventName) ->
 		[
 			"#{eventName} events are subscribed to",
 			->
-				if !@receivedEvents? then @receivedEvents = {}
-				@receivedEvents[eventName] = []
+				if !@receivedEvents? then @receivedEvents = new ReceivedEvents()
+				@receivedEvents.clear eventName
 				eventServer.ready =>
 					module.exports.subscribe eventName, (data) =>
-						if @receivedEvents[eventName]?
-							@receivedEvents[eventName].push data
+						@receivedEvents.add eventName, data
 					@callback()
 		]
 
@@ -62,7 +81,7 @@ module.exports =
 		[
 			"I should receive a character created event for character #{id} named '#{name}'",
 			->
-				event = @receivedEvents.characterCreated[0]
+				event = @receivedEvents.getLast 'characterCreated'
 				assert.equal event.id, id
 				assert.equal event.name, name
 		]
@@ -71,16 +90,26 @@ module.exports =
 		[
 			"I should receive a character deleted event for character #{id}",
 			->
-				event = @receivedEvents.characterDeleted[0]
+				event = @receivedEvents.getLast 'characterDeleted'
 				assert.equal event.id, id
 		]
 
 	ShouldDescribeCharacter_MovingTo_: (id, location) ->
 		[
-			"I should an event saying character #{id} has moved to #{JSON.stringify location}",
+			"I should receive an event saying character #{id} has moved to #{JSON.stringify location}",
 			->
-				event = @receivedEvents.characterMoved[0]
+				event = @receivedEvents.getLast 'characterMoved'
 				assert.equal event.id, id
+				assert.deepEqual event.location, location
+		]
+
+	ShouldDescribeCharacter_MovingTowards_: (id, destination) ->
+		[
+			"I should receive an event saying character #{id} is moving towards #{JSON.stringify destination}",
+			->
+				event = @receivedEvents.getLast 'characterMoving'
+				assert.equal event.id, id
+				assert.deepEqual event.destination, destination
 		]
 
 	subscribe: (eventName, handler) ->

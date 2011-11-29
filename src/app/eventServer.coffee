@@ -1,7 +1,7 @@
 util = require "util"
 log = require '../logger'
 
-allEvents = ['characterCreated', 'characterDeleted', 'characterMoved']
+allEvents = ['characterCreated', 'characterDeleted', 'characterMoving', 'characterMoved']
 
 class EventServer
 	constructor: (@server, @domainEvents) ->

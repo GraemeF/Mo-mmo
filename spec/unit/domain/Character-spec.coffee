@@ -31,11 +31,11 @@ Feature("Character", module)
 		newChar.move {x:1,y:2,z:3}
 		@callback()
 
-	.then "it should add a characterMoved event to the character's uncommitted events", ->
+	.then "it should add a characterMoving event to the character's uncommitted events", ->
 		event = newChar.uncommittedEvents[1]
-		assert.equal event.name, "characterMoved"
+		assert.equal event.name, "characterMoving"
 		assert.equal event.data.id, 1
-		assert.deepEqual event.data.location, {x:1,y:2,z:3}
+		assert.deepEqual event.data.destination, {x:1,y:2,z:3}
 
 	.complete()
 

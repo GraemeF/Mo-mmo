@@ -23,12 +23,12 @@ class Character
 		@apply [event]
 		@append [event]
 
-	move: (location) ->
+	move: (destination) ->
 		event =
-			name: "characterMoved"
+			name: "characterMoving"
 			data:
 				id: @id
-				location: location
+				destination: destination
 		@apply [event]
 		@append [event]
 
@@ -46,6 +46,9 @@ class Character
 
 	apply_characterDeleted: (data) ->
 		@deleted = true
+
+	apply_characterMoving: (data) ->
+		@destination = data.destination
 
 	apply_characterMoved: (data) ->
 		@location = data.location
