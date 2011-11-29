@@ -63,6 +63,9 @@ class ReceivedEvents
 			throw new Error "No #{name} events have been received."
 		@events[name][@events[name].length-1]
 
+	any: (name) ->
+		@events[name] and @events[name].length > 0
+
 
 module.exports =
 	Named_AreSubscribedTo: (eventName) ->
@@ -109,7 +112,7 @@ module.exports =
 			->
 				event = @receivedEvents.getLast 'characterMoving'
 				assert.equal event.id, id
-				assert.deepEqual event.destination, destination
+				assert.deepEqual event.movement.destination, destination
 		]
 
 	ShouldDescribeCharacter_Moved: (id) ->
@@ -118,6 +121,13 @@ module.exports =
 			->
 				event = @receivedEvents.getLast 'characterMoved'
 				assert.equal event.id, id
+		]
+
+	WaitFor_: (name) ->
+		[
+			"I wait for a #{name} event",
+			->
+				module.exports.waitFor((=> @receivedEvents.any "characterMoved"), 10, => @callback())
 		]
 
 	subscribe: (eventName, handler) ->

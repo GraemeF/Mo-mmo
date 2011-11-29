@@ -45,8 +45,5 @@ Feature("MoveCharacterHandler", module)
 	.then "it should move the character", ->
 		Sinon.assert.calledWith @character.move, @targetLocation
 
-	.and "it should store the character in the repository", ->
-		Sinon.assert.calledWith @repo.storeCharacter, @character
-
 	.complete()
 	.finish(module)

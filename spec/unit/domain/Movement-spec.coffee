@@ -16,6 +16,17 @@ AMovementFrom_To_StartingAt_AtASpeedOf_UnitsPerSecond = (source, destination, st
 			@callback()
 	]
 
+TheMovementShouldStillBeFrom_To_StartingAt_AtASpeedOf_UnitsPerSecond = (source, destination, startTime, speed) ->
+	[
+		"the movement should still be from #{source} to #{destination} starting at #{startTime}ms at a speed of #{speed} units/second",
+		->
+			assert.deepEqual @movement,
+				source: source
+				destination: destination
+				startTime: startTime
+				speed: speed
+	]
+
 TheLocationAt_IsCalculated = (time) ->
 	[
 		"the location at #{time}ms is calculated",
@@ -36,6 +47,7 @@ Feature("Movement", module)
 	.given(AMovementFrom_To_StartingAt_AtASpeedOf_UnitsPerSecond [0,0,0], [10,0,0], 0, 1)
 	.when(TheLocationAt_IsCalculated 2000)
 	.then(TheResultShouldBeApproximately_ [2,0,0])
+	.and(TheMovementShouldStillBeFrom_To_StartingAt_AtASpeedOf_UnitsPerSecond [0,0,0], [10,0,0], 0, 1)
 	.complete()
 
 	.scenario("Reach the end of a movement")

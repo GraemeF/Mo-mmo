@@ -41,7 +41,8 @@ IMoveTheCharacterTowards_ = (destination) ->
 	[
 		"I move the character towards #{destination}",
 		->
-			@character.move destination
+			@trackMovementCallback = sinon.spy()
+			@character.move destination, @trackMovementCallback
 			@callback()
 	]
 
@@ -73,6 +74,8 @@ Feature("Character", module)
 		assert.equal event.name, "characterMoved"
 		assert.equal event.data.id, 1
 		assert.deepEqual event.data.location, [4, 5, 6]
+	.and "it should call the callback when movement is tracked", ->
+		assert.isTrue @trackMovementCallback.called
 	.complete()
 
 	.scenario("Delete a character")

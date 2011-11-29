@@ -6,7 +6,6 @@ class MoveCharacterHandler
 
 	handle: (command) ->
 		character = @characterRepo.getCharacter command.data.id
-		character.move command.data.location
-		@characterRepo.storeCharacter character
+		character.move command.data.location, => @characterRepo.storeCharacter character
 
 module.exports = MoveCharacterHandler
