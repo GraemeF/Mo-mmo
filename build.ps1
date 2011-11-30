@@ -18,6 +18,8 @@ task Test -depends UnitTests, IntegrationTests
 task Compile -depends Clean { 
   exec { coffee --bare --compile --output lib/ src/ }
   exec { coffee --bare --compile --output speclib/ spec/ }
+  Copy-Item -Recurse src\ui lib
+  Copy-Item node_modules\socket.io-client\dist -destination lib\ui\libs -recurse
 }
 
 task Clean {
