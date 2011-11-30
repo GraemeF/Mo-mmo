@@ -45,7 +45,7 @@ wait = ->
 ioServer = io.listen server
 
 ioServer.configure () ->
-	#ioServer.disable('log')
+	ioServer.disable('log')
 
 ioServer.configure 'test', () ->
 	ioServer.set('transports', ['xhr-polling'])

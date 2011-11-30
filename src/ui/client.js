@@ -1,12 +1,11 @@
 $(function () {
-    const baseUri = 'http://god:3003/';
-    var socket = io.connect(baseUri);
+    var socket = io.connect();
 
     socket.on('connect', function (data) {
         console.log(data);
         $.ajax({
             type:'POST',
-            url:'http://god:3003/commands',
+            url:'/commands',
             data:{name:'addCharacter', data:{id:2, name:'Lynn'}},
             success:function () {
                 console.log("Success!");
@@ -26,7 +25,7 @@ $(function () {
     $(".button").click(function () {
         $.ajax({
             type:'POST',
-            url:'http://god:3003/commands',
+            url:'/commands',
             data:{name:'moveCharacter', data:{id:2, location:[$("input#x").val(), $("input#y").val(), $("input#z").val()]}},
             success:function () {
                 console.log("Success!");
