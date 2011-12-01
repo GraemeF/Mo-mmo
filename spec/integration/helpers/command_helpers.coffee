@@ -20,7 +20,7 @@ commandProcessor.handlerFactories.moveCharacter =
 
 commandServer = new Mommo.App.CommandServer server, commandProcessor
 
-port = 3003
+port = 3004
 
 commandServer.ready = (callback) ->
   if @active
