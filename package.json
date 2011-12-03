@@ -16,10 +16,12 @@
         "express":""
     },
     "devDependencies":{
+        "async":"",
         "coffee-script":"",
         "request":"",
         "sinon":"",
         "vows":"",
-        "vows-bdd":""
+        "vows-bdd":"",
+        "wrench":""
     }
 }
