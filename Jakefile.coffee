@@ -1,9 +1,9 @@
 {exec, spawn} = require 'child_process'
 fs = require 'fs'
 wrench = require "wrench"
-async = require "async"
 path = require 'path'
 {step} = require 'step'
+_und = require 'underscore'
 
 walk = (dir, done) ->
   results = []
@@ -29,9 +29,8 @@ strEndsWith = (str, suffix) ->
 
 runVows = (directory) ->
 	walk directory, (err, files) ->
-		async.filter(files, ((file, cb) -> cb(file.indexOf '-spec' != -1)), (specFiles) ->
-			console.log directory, specFiles
-			executeCommandLine "vows #{specFiles.join ' '}", complete)
+		specFiles = _und(files).filter((file)-> (file.indexOf '-spec') != -1)
+		executeCommandLine "vows #{specFiles.join ' '}", complete
 
 compile = (input, output, callback) ->
 	executeCommandLine "coffee --bare --compile --output #{output} #{input}", callback
