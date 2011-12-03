@@ -46,30 +46,16 @@ executeCommandLine = (commandLine, callback) ->
 desc 'Default task.'
 task 'default', ['Test'], ->
 
-task 'IntegrationTests', ['Compile'], (-> runVows 'speclib/integration'), true
-
+task 'Test', ['UnitTests', 'IntegrationTests', 'EndToEndTests'], ->
+task 'EndToEndTests', ['Compile', 'IntegrationTests'], (-> runVows 'speclib/endtoend'), true
+task 'IntegrationTests', ['Compile', 'UnitTests'], (-> runVows 'speclib/integration'), true
 task 'UnitTests', ['Compile'], (-> runVows 'speclib/unit'), true
-
 task 'AllTests', ['Compile'], (-> exec 'vows', complete), true
 
-task 'Test', ['UnitTests', 'IntegrationTests'], ->
-
+task 'Compile', ['CompileSrc', 'CompileSpecs'], ->
 task('CompileSrc', [], (-> compile 'src/', 'lib/', complete), true)
 task('CompileSpecs', [], (-> compile 'spec/', 'speclib/', complete), true)
 
-task 'Compile', ['CompileSrc', 'CompileSpecs'], ->
-
 task 'Clean', ["CleanLib","CleanSpecLib"], ->
-
 task 'CleanLib', [], (-> wrench.rmdirRecursive "lib", complete), true
 task 'CleanSpecLib', [], (-> wrench.rmdirRecursive "speclib", complete), true
-
-desc('This is an asynchronous task.')
-task('asynchronous', [], () ->
-	setTimeout(() ->
-		console.log("Yay, I'm asynchronous!")
-		complete()
-	, 1000)
-, true)
-
-task "depends", ["asynchronous"], -> console.log "done"
