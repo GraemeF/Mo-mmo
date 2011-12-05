@@ -19,4 +19,4 @@ module.exports =
 		browser((err, browser) ->
 			if err
 				callback err, null
-			browser.fill('newCharacterName', name).pressButton('createCharacter', callback))
+			browser.fill('newCharacterName', name).pressButton('Add Character', callback))
