@@ -17,10 +17,10 @@ class EventServer
 
 	publishDomainEvent: (eventName) ->
 		@domainEvents.subscribe eventName, (data) =>
-			if eventName == "characterMoved"
-				@server.sockets.volatile.emit eventName, data
-			else
-				@server.sockets.emit eventName, data
+			#if eventName == "characterMoved"
+			#	@server.sockets.volatile.emit eventName, data
+			#else
+			@server.sockets.emit eventName, data
 
 	publishDomainEvents: ->
 		for eventName in allEvents
