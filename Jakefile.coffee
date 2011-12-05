@@ -4,6 +4,7 @@ wrench = require "wrench"
 path = require 'path'
 {step} = require 'step'
 _und = require 'underscore'
+fileutils = require 'fileutils/fileutils.js'
 
 walk = (dir, done) ->
   results = []
@@ -47,7 +48,7 @@ desc 'Default task.'
 task 'default', ['Test'], ->
 
 task 'Test', ['UnitTests', 'IntegrationTests', 'EndToEndTests'], ->
-task 'EndToEndTests', ['Compile', 'IntegrationTests'], (-> runVows 'speclib/endtoend'), true
+task 'EndToEndTests', ['Compile', 'IntegrationTests', 'CopyUI'], (-> runVows 'speclib/endtoend'), true
 task 'IntegrationTests', ['Compile', 'UnitTests'], (-> runVows 'speclib/integration'), true
 task 'UnitTests', ['Compile'], (-> runVows 'speclib/unit'), true
 task 'AllTests', ['Compile'], (-> exec 'vows', complete), true
@@ -55,6 +56,11 @@ task 'AllTests', ['Compile'], (-> exec 'vows', complete), true
 task 'Compile', ['CompileSrc', 'CompileSpecs'], ->
 task('CompileSrc', [], (-> compile 'src/', 'lib/', complete), true)
 task('CompileSpecs', [], (-> compile 'spec/', 'speclib/', complete), true)
+task('CopyUI', [], (->
+	fileutils.copyFileIntoDir './src/ui/index.html', './lib/ui/'
+	fileutils.mkdirSync './lib/ui/libs'
+	fileutils.copyFileIntoDir './node_modules/socket.io-client/dist/socket.io.js', './lib/ui/libs'
+	), false)
 
 task 'Clean', ["CleanLib","CleanSpecLib"], ->
 task 'CleanLib', [], (-> wrench.rmdirRecursive "lib", complete), true
