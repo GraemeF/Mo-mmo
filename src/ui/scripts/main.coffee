@@ -1,0 +1,1 @@
+require ["client", "libs/knockout", "libs/socket.io"], ->

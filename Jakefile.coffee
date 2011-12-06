@@ -48,7 +48,7 @@ desc 'Default task.'
 task 'default', ['Test'], ->
 
 task 'Test', ['UnitTests', 'IntegrationTests', 'EndToEndTests'], ->
-task 'EndToEndTests', ['Compile', 'IntegrationTests', 'CopyUI'], (-> runVows 'speclib/endtoend'), true
+task 'EndToEndTests', ['Compile', 'IntegrationTests', 'CompileUI'], (-> runVows 'speclib/endtoend'), true
 task 'IntegrationTests', ['Compile', 'UnitTests'], (-> runVows 'speclib/integration'), true
 task 'UnitTests', ['Compile'], (-> runVows 'speclib/unit'), true
 task 'AllTests', ['Compile'], (-> exec 'vows', complete), true
@@ -56,10 +56,10 @@ task 'AllTests', ['Compile'], (-> exec 'vows', complete), true
 task 'Compile', ['CompileSrc', 'CompileSpecs'], ->
 task('CompileSrc', [], (-> compile 'src/', 'lib/', complete), true)
 task('CompileSpecs', [], (-> compile 'spec/', 'speclib/', complete), true)
+task('CompileUI', ["CopyUI"], (-> compile 'lib/ui/', 'lib/ui/', complete), true)
 task('CopyUI', [], (->
-	fileutils.copyFileIntoDir './src/ui/index.html', './lib/ui/'
-	fileutils.mkdirSync './lib/ui/libs'
-	fileutils.copyFileIntoDir './node_modules/socket.io-client/dist/socket.io.js', './lib/ui/libs'
+	wrench.copyDirSyncRecursive './src/ui', './lib/ui'
+	fileutils.copyFileIntoDir './node_modules/socket.io-client/dist/socket.io.js', './lib/ui/scripts/libs'
 	), false)
 
 task 'Clean', ["CleanLib","CleanSpecLib"], ->
