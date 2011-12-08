@@ -2,20 +2,21 @@
 <html>
 <head>
     <title>a game</title>
-    <script data-main="scripts/main" src="scripts/libs/require.js"></script>
+    <script data-main="scripts/main" src="scripts/libs/require-jquery.js"></script>
 </head>
 <body>
 <h2>Characters</h2>
-<form>
-    <label for="newCharacterName">Name</label><input type="text" name="newCharacterName" id="newCharacterName" />
-    <input type="submit" name="submit" class="button" id="createCharacter" value="Add Character" />
+<form data-bind="submit: addCharacter">
+    <label for="newCharacterName">Name</label>
+    <input data-bind="value: newCharacterName" id="newCharacterName" name="newCharacterName" />
+    <button type="submit">Add Character</button>
 </form>
-<p>Location: <span id="location"></span> </p>
+<p>Location <span id="location"></span> </p>
 <form>
     <label for="x">X</label><input type="text" name="x" id="x" />
     <label for="y">Y</label><input type="text" name="y" id="y" />
     <label for="z">Z</label><input type="text" name="y" id="z" />
-    <input type="submit" name="submit" class="button" id="submit_btn" value="Go" />
+    <button type="submit">Go</button>
 </form>
 </body>
 </html>
