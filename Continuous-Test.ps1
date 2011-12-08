@@ -4,7 +4,7 @@ Function Rebuild($message)
 {
 	cls
 	Write-Host $message
-	Invoke-psake .\build.ps1
+	jake
 }
 
 Rebuild "Starting up."
