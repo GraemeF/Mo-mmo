@@ -126,8 +126,7 @@ module.exports = {
   ShouldDescribeTheCreationOfCharacter_Named_: function(id, name) {
     return [
       "I should receive a character created event for character " + id + " named '" + name + "'", function() {
-        var event;
-        event = this.receivedEvents.getLast('characterCreated');
+        var event = this.receivedEvents.getLast('characterCreated');
         assert.equal(event.id, id);
         return assert.equal(event.name, name);
       }
