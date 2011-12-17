@@ -8,7 +8,7 @@ Function Rebuild($message)
 }
 
 Rebuild "Starting up."
-watch | Where-Object { ($_.Path -notlike "*.git*") -and ($_.Path -notlike "*.idea*") } | %{ Write-Output $_.Path.Replace("___jb_bak___", "") } | Where-Object { $_.EndsWith(".coffee") } | %{
+watch | Where-Object { ($_.Path -notlike "*.git*") -and ($_.Path -notlike "*.idea*") } | %{ Write-Output $_.Path.Replace("___jb_bak___", "") } | Where-Object { $_.EndsWith(".js") } | %{
 	cls
 	Write-Host "$_ changed."
 	jake

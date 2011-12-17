@@ -1,25 +1,33 @@
-var exec, executeCommandLine, spawn, _ref;
+spawn = require('child_process').spawn;
 
-_ref = require('child_process'), exec = _ref.exec, spawn = _ref.spawn;
-
-executeCommandLine = function(commandLine) {
-  var commandProcess;
-  commandProcess = exec(commandLine);
-  commandProcess.stdout.pipe(process.stdout, {
-    end: false
-  });
-  return commandProcess.stderr.pipe(process.stderr, {
-    end: false
-  });
+var runServer = function () {
+    var commandProcess;
+    commandProcess = spawn("node", ["lib/server"]);
+    commandProcess.stdout.pipe(process.stdout, {
+        end:false
+    });
+    commandProcess.stderr.pipe(process.stderr, {
+        end:false
+    });
+    commandProcess.on('exit', function (code, signal) {
+        console.log('Server process terminated due to receipt of signal ' + signal);
+    });
+    console.log("Started", commandProcess);
+    return commandProcess;
 };
+var serverProcess;
 
 module.exports = {
-  HasBeenStarted: function() {
-    return [
-      "server has been started", function() {
-        this.server = executeCommandLine('node lib/server');
-        return this.callback();
-      }
-    ];
-  }
+    HasBeenStarted:function () {
+        return [
+            "server has been started", function () {
+                serverProcess = runServer();
+                return this.callback();
+            }
+        ];
+    },
+    Stop:function () {
+        serverProcess.kill();
+        this.callback();
+    }
 };

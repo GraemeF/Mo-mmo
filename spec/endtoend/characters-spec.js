@@ -7,5 +7,5 @@ Feature("Characters", module)
     .given(Server.HasBeenStarted())
     .when(Character.IsCreatedWithName_('bob'))
     .then(Character._ShouldBeShown('bob'))
-    .complete()
+    .complete(Server.Stop)
     .finish(module);

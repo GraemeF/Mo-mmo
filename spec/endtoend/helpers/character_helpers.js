@@ -7,7 +7,10 @@ character = {
         return [
             "character is created with name '" + name + "'",
             function () {
-                return browser.createCharacter(name, this.callback);
+                cb = this.callback;
+                return browser.createCharacter(name, function () {
+                    cb();
+                });
             }
         ];
     },
@@ -15,7 +18,7 @@ character = {
         return [
             "character '" + name + "' should be shown",
             function () {
-                assert.include(browser.characters(), "name");
+                assert.include(browser.characters(), name);
             }
         ];
     }
