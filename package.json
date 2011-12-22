@@ -1,13 +1,18 @@
 {
-    "author":"Graeme Foster <graemef@gmail.com> (http://graemef.com)",
-    "name":"mommo",
-    "description":"Some kind of game thing.",
+    "name":"Mo-mmo",
     "version":"0.0.0",
-    "repository":{
-        "url":""
+    "author":"Graeme Foster <graemef@gmail.com> (http://graemef.com)",
+    "description":"Some kind of game thing.",
+    "bin":{
+        "mommo":"./bin/server"
     },
-    "engines":{
-        "node":"0.6.0"
+    "scripts":{
+        "start":"node ./bin/server",
+        "test":"vows --spec --isolate"
+    },
+    "repository":{
+        "type":"git",
+        "url":"git@github.com:GraemeF/Mo-mmo.git"
     },
     "dependencies":{
         "winston":"",
@@ -21,7 +26,9 @@
         "sinon":"",
         "vows":"",
         "vows-bdd":"",
-        "underscore":"",
-        "wrench":""
+        "underscore":""
+    },
+    "engines":{
+        "node":">=0.6"
     }
 }
