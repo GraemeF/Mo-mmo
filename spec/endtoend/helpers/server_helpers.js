@@ -22,7 +22,10 @@ module.exports = {
         return [
             "server has been started", function () {
                 serverProcess = runServer();
-                return this.callback();
+                var cb = this.callback;
+                setTimeout(function () {
+                    cb();
+                }, 1000);
             }
         ];
     },
