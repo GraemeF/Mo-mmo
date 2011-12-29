@@ -9,7 +9,7 @@ character = {
             function () {
                 cb = this.callback;
                 return browser.createCharacter(name, function () {
-                    cb();
+                    setTimeout(function(){cb();}, 2000);
                 });
             }
         ];
