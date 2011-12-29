@@ -7,6 +7,6 @@
 guard 'shell' do
   watch /(.*).js/ do |m|
     n m[0], 'Changed'
-    `npm test`
+    `vows --spec`
   end
 end
