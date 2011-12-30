@@ -25,7 +25,7 @@ module.exports = {
                 var cb = this.callback;
                 setTimeout(function () {
                     cb();
-                }, 1000);
+                }, 2000);
             }
         ];
     },
