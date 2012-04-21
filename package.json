@@ -8,7 +8,7 @@
     },
     "scripts":{
         "start":"node ./bin/server",
-        "test":"node_modules/vows/bin/vows --spec --isolate"
+        "test":"node_modules/cucumber/bin/cucumber.js"
     },
     "repository":{
         "type":"git",
@@ -21,11 +21,10 @@
         "express":""
     },
     "devDependencies":{
+        "cucumber":"",
         "request":"",
         "sinon":"",
         "underscore":"",
-        "vows":"",
-        "vows-bdd":"",
         "zombie":""
     },
     "engines":{
