@@ -4,10 +4,10 @@
     "author":"Graeme Foster <graemef@gmail.com> (http://graemef.com)",
     "description":"Some kind of game thing.",
     "bin":{
-        "mommo":"./bin/server"
+        "mommo":"./lib/server"
     },
     "scripts":{
-        "start":"node ./bin/server",
+        "start":"node ./lib/server",
         "test":"node_modules/cucumber/bin/cucumber.js"
     },
     "repository":{
