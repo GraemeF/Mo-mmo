@@ -9,12 +9,12 @@ var runServer = function (callback) {
             callback(null, commandProcess);
         }
     });
-    commandProcess.stdout.pipe(process.stdout, {
+    /*commandProcess.stdout.pipe(process.stdout, {
         end:false
     });
     commandProcess.stderr.pipe(process.stderr, {
         end:false
-    });
+    });*/
     commandProcess.on('exit', function (code, signal) {
         console.log('Server process terminated due to receipt of signal ' + signal);
     });
@@ -35,9 +35,11 @@ hooks = function () {
 
             zombie.visit('/index.html', function (err, newBrowser) {
                 world.browser = new Browser(newBrowser);
-                runScenario(function (callback) {
-                    serverProcess.kill();
-                    callback();
+                process.nextTick(function () {
+                    runScenario(function (callback) {
+                        serverProcess.kill();
+                        callback();
+                    });
                 });
             });
         });
