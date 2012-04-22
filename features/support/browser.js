@@ -22,14 +22,11 @@ Browser.prototype.createCharacter = function (name, callback) {
 
 Browser.prototype.characters = function () {
     console.log("Getting characters");
-    return browser(function (err, browser) {
-        if (err) callback(err, null);
-        var chars = _.map(browser.queryAll('.character'), function (x) {
-            return x.textContent;
-        });
-        console.log("Characters:", chars);
-        return chars;
+    var chars = _.map(this.zombie.queryAll('.character'), function (x) {
+        return x.textContent;
     });
+    console.log("Characters:", chars);
+    return chars;
 };
 
 module.exports = Browser;

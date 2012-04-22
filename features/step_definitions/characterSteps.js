@@ -1,3 +1,5 @@
+var should = require('chai').should();
+
 module.exports = function () {
 
     this.When('I create a character named $name', function (name, callback) {
@@ -5,7 +7,7 @@ module.exports = function () {
     });
 
     this.Then('a character named $name should be shown', function (name, callback) {
-        // express the regexp above with the code you wish you had
-        callback.pending();
+        this.browser.characters().should.include(name);
+        callback();
     });
 };
