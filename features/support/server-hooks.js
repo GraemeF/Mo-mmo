@@ -1,5 +1,6 @@
 var spawn = require('child_process').spawn;
-var zombie = require("zombie");
+var Zombie = require("zombie");
+var Browser = require('./browser');
 
 var runServer = function (callback) {
     var commandProcess = spawn("node", ["lib/server"]);
@@ -26,14 +27,14 @@ hooks = function () {
 
         runServer(function (error, serverProcess) {
             world.serverProcess = serverProcess;
-            world.zombie = new zombie.Browser({
+            var zombie = new Zombie.Browser({
                 runScripts:true,
-                debug:true,
+                site:'http://localhost:3003',
                 userAgent:"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/535.7 (KHTML, like Gecko) Chrome/16.0.912.59 Safari/535.7"
             });
 
-            zombie.visit('http://localhost:3003/index.html', function (err, newBrowser) {
-                world.zombie = newBrowser;
+            zombie.visit('/index.html', function (err, newBrowser) {
+                world.browser = new Browser(newBrowser);
                 runScenario(function (callback) {
                     serverProcess.kill();
                     callback();
