@@ -11,6 +11,7 @@ sinon = require('sinon');
 util = require('util');
 
 var mocha = require('mocha');
+require('chai').should();
 
 EnsureStubsExist = function (owner) {
     owner.movement || (owner.movement = {
@@ -82,26 +83,15 @@ describe('Character', function () {
 
         it('should add a characterCreated event to the character\'s uncommitted events', function () {
             var event = character.uncommittedEvents[0];
-            assert.equal(event.name, "characterCreated");
-            assert.equal(event.data.id, 1);
-            return assert.equal(event.data.name, "bob");
+            event.name.should.equal("characterCreated");
+            event.data.id.should.equal(1);
+            event.data.name.should.equal("bob");
         });
     });
 });
 
 
 Feature("Character", module)
-    .scenario("Create a new character")
-    .when(Character_IsCreatedWithName_(1, "bob"))
-    .then("it should add a characterCreated event to the character's uncommitted events",
-    function () {
-        var event;
-        event = this.character.uncommittedEvents[0];
-        assert.equal(event.name, "characterCreated");
-        assert.equal(event.data.id, 1);
-        return assert.equal(event.data.name, "bob");
-    })
-    .complete()
     .scenario("Move a character")
     .given(TheTimeIs_(10000))
     .and(Character_IsCreatedWithName_(1, "bob"))
