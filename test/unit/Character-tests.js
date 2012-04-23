@@ -1,67 +1,7 @@
-var Character, Character_IsCreatedWithName_, EnsureStubsExist, Feature, IMoveTheCharacterTowards_, LocationAt_IsCalculatedAs_, TheTimeIs_, assert, log, sinon, util, vows;
-
-Character = require("../../lib/domain/Character");
-
-Feature = require("vows-bdd").Feature;
-
-assert = require('assert');
-
-sinon = require('sinon');
-
-util = require('util');
-
+var Character = require("../../lib/domain/Character");
+var sinon = require('sinon');
 var mocha = require('mocha');
 require('chai').should();
-
-EnsureStubsExist = function (owner) {
-    owner.movement || (owner.movement = {
-        calculateLocation:sinon.stub()
-    });
-    return owner.now || (owner.now = sinon.stub());
-};
-
-Character_IsCreatedWithName_ = function (id, name) {
-    return [
-        "Character " + id + " is created with name " + name,
-        function () {
-            EnsureStubsExist(this);
-            this.character = new Character(1, "bob", this.movement, this.now);
-            return this.callback();
-        }
-    ];
-};
-
-TheTimeIs_ = function (time) {
-    return [
-        "the time is " + time,
-        function () {
-            EnsureStubsExist(this);
-            this.now.returns(time);
-            return this.callback();
-        }
-    ];
-};
-
-LocationAt_IsCalculatedAs_ = function (time, location) {
-    return [
-        "the location at " + time + " is calculated as " + location, function () {
-            EnsureStubsExist(this);
-            this.movement.calculateLocation.returns(location);
-            return this.callback();
-        }
-    ];
-};
-
-IMoveTheCharacterTowards_ = function (destination) {
-    return [
-        "I move the character towards " + destination, function () {
-            this.trackMovementCallback = sinon.spy();
-            this.character.move(destination, this.trackMovementCallback);
-            return this.callback();
-        }
-    ];
-};
-
 
 describe('Character', function () {
     var movement;
@@ -134,13 +74,10 @@ describe('Character', function () {
             });
         });
     });
-});
 
-
-Feature("Character", module)
-    .scenario("Load a character from events").given("a characterCreated event",
-    function () {
-        this.events = [
+    describe('when loaded from events', function () {
+        var character;
+        var events = [
             {
                 name:"characterCreated",
                 data:{
@@ -149,13 +86,16 @@ Feature("Character", module)
                 }
             }
         ];
-        return this.callback();
-    }).when("I create a character with the event",
-    function () {
-        this.character = new Character(this.events);
-        return this.callback();
-    }).then("the character should have the name and id from the event",
-    function () {
-        assert.equal(this.character.name, "bob");
-        return assert.equal(this.character.id, 1);
-    }).complete().finish(module);
+
+        beforeEach(function () {
+            character = new Character(events);
+        });
+
+        it('should have the id from the event', function () {
+            character.id.should.equal(1);
+        });
+        it('should have the name from the event', function () {
+            character.name.should.equal("bob");
+        });
+    });
+});
