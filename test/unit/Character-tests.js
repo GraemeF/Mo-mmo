@@ -87,37 +87,46 @@ describe('Character', function () {
             event.data.id.should.equal(1);
             event.data.name.should.equal("bob");
         });
+
+        describe('and told to move', function () {
+            const startTime = 10000;
+            const midLocation = [4, 5, 6];
+            const destination = [1, 2, 3];
+            var trackMovementCallback = sinon.spy();
+
+            beforeEach(function () {
+                movement.calculateLocation.returns(midLocation);
+                now.returns(startTime);
+
+                character.move(destination, trackMovementCallback);
+            });
+
+            it('should add a characterMoving event to the character\'s uncommitted events', function () {
+                var event = character.uncommittedEvents[1];
+                event.name.should.equal("characterMoving");
+                event.data.id.should.equal(1);
+                event.data.movement.startTime.should.equal(startTime);
+                event.data.movement.source.should.eql([0, 0, 0]);
+                event.data.movement.destination.should.eql(destination);
+            });
+
+            it('should add a characterMoved event to the character\'s uncommitted events', function () {
+                var event = character.uncommittedEvents[2];
+                event.name.should.equal("characterMoved");
+                event.data.id.should.equal(1);
+                event.data.location.should.eql(midLocation);
+            });
+
+            it('it should call the callback when movement is tracked', function () {
+                trackMovementCallback.called.should.be.true;
+            });
+        });
     });
 });
 
 
 Feature("Character", module)
-    .scenario("Move a character")
-    .given(TheTimeIs_(10000))
-    .and(Character_IsCreatedWithName_(1, "bob"))
-    .and(LocationAt_IsCalculatedAs_(11000, [4, 5, 6]))
-    .when(IMoveTheCharacterTowards_([1, 2, 3]))
-    .and(TheTimeIs_(11000))
-    .then("it should add a characterMoving event to the character's uncommitted events",
-    function () {
-        var event;
-        event = this.character.uncommittedEvents[1];
-        assert.equal(event.name, "characterMoving");
-        assert.equal(event.data.id, 1);
-        assert.equal(event.data.movement.startTime, 10000);
-        assert.deepEqual(event.data.movement.source, [0, 0, 0]);
-        return assert.deepEqual(event.data.movement.destination, [1, 2, 3]);
-    }).and("it should add a characterMoved event to the character's uncommitted events",
-    function () {
-        var event;
-        event = this.character.uncommittedEvents[2];
-        assert.equal(event.name, "characterMoved");
-        assert.equal(event.data.id, 1);
-        return assert.deepEqual(event.data.location, [4, 5, 6]);
-    }).and("it should call the callback when movement is tracked",
-    function () {
-        return assert.isTrue(this.trackMovementCallback.called);
-    }).complete().scenario("Delete a character").given(Character_IsCreatedWithName_(1, "bob")).when("I delete the character",
+    .scenario("Delete a character").given(Character_IsCreatedWithName_(1, "bob")).when("I delete the character",
     function () {
         this.character["delete"]();
         return this.callback();
