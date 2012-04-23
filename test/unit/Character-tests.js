@@ -121,22 +121,24 @@ describe('Character', function () {
                 trackMovementCallback.called.should.be.true;
             });
         });
+
+        describe('and deleted', function () {
+            beforeEach(function () {
+                character['delete']();
+            });
+
+            it("it should add a characterDeleted event to the character's uncommitted events", function () {
+                var event = character.uncommittedEvents[1];
+                event.name.should.equal("characterDeleted");
+                event.data.id.should.equal(1);
+            });
+        });
     });
 });
 
 
 Feature("Character", module)
-    .scenario("Delete a character").given(Character_IsCreatedWithName_(1, "bob")).when("I delete the character",
-    function () {
-        this.character["delete"]();
-        return this.callback();
-    }).then("it should add a characterDeleted event to the character's uncommitted events",
-    function () {
-        var event;
-        event = this.character.uncommittedEvents[1];
-        assert.equal(event.name, "characterDeleted");
-        return assert.equal(event.data.id, 1);
-    }).complete().scenario("Load a character from events").given("a characterCreated event",
+    .scenario("Load a character from events").given("a characterCreated event",
     function () {
         this.events = [
             {
