@@ -1,2 +1,3 @@
 --reporter spec
 --require test/common
+--globals $V,$M,$L,$P
