@@ -1,7 +1,4 @@
-var Character = require("../../lib/domain/Character");
-var sinon = require('sinon');
-var mocha = require('mocha');
-require('chai').should();
+var Character = require("../lib/domain/Character");
 
 describe('Character', function () {
     var movement;
