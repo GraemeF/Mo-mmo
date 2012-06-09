@@ -1,12 +1,8 @@
-var Character, Events, Feature, assert, log, vows, _ref;
+var Feature = require("vows-bdd").Feature;
 
-Feature = require("vows-bdd").Feature;
-
-_ref = require("./helpers"), log = _ref.log, Character = _ref.Character, Events = _ref.Events;
-
-vows = require('vows');
-
-assert = require('assert');
+var _ref = require("./helpers");
+var Character = _ref.Character;
+var Events = _ref.Events;
 
 Feature("Character management", module)
 
