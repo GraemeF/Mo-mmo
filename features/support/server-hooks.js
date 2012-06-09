@@ -22,8 +22,7 @@ var hooks = function () {
             world.serverProcess = serverProcess;
             var zombie = new Zombie.Browser({
                                                 runScripts: true,
-                                                site: 'http://localhost:3003',
-                                                userAgent: "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/535.7 (KHTML, like Gecko) Chrome/16.0.912.59 Safari/535.7"
+                                                site: 'http://localhost:3003'
                                             });
 
             zombie.visit('/index.html', function (err, newBrowser) {
