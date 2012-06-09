@@ -5,7 +5,7 @@ var Browser = require('./browser');
 var runServer = function (callback) {
     var commandProcess = spawn("node", ["lib/server"]);
     commandProcess.stdout.on('data', function (data) {
-        if (data === 'Ready.\n') {
+        if (data.toString() === 'Ready.\n') {
             callback(null, commandProcess);
         }
     });
