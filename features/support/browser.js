@@ -12,9 +12,9 @@ Browser.prototype.createCharacter = function (name, callback) {
 
 Browser.prototype.characters = function () {
     return _.map(this.zombie.queryAll('.character'),
-        function (character) {
-            return character.textContent;
-        });
+                 function (character) {
+                     return character.textContent;
+                 });
 };
 
 module.exports = Browser;

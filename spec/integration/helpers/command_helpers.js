@@ -60,9 +60,8 @@ var CommandSink = function (baseUri) {
 };
 
 CommandSink.prototype.send = function (command, callback) {
-    var uri = this.baseUri + "commands";
     request.post({
-                     uri: uri,
+                     uri: this.baseUri + "commands",
                      json: command
                  },
                  function (error, response, body) {
