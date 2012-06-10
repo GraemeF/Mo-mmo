@@ -1,3 +1,4 @@
+@browser
 Feature: Create character
   In order to play the game
   As a player

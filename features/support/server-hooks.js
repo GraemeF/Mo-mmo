@@ -9,33 +9,34 @@ var runServer = function (callback) {
             callback(null, commandProcess);
         }
     });
-    commandProcess.on('exit', function (code, signal) {
-        console.log('Server process terminated due to receipt of signal ' + signal);
-    });
 };
 
 var hooks = function () {
-    this.Around(function (runScenario) {
+    this.Before(function (callback) {
         var world = this;
 
         runServer(function (error, serverProcess) {
             world.serverProcess = serverProcess;
-            var zombie = new Zombie.Browser({
-                                                runScripts: true,
-                                                site: 'http://localhost:3003'
-                                            });
-
-            zombie.visit('/index.html', function (err, newBrowser) {
-                world.browser = new Browser(newBrowser);
-                process.nextTick(function () {
-                    runScenario(function (callback) {
-                        serverProcess.kill();
-                        callback();
-                    });
-                });
-            });
+            callback(error);
         });
+    });
 
+    this.Before("@browser", function (callback) {
+        var world = this;
+        var zombie = new Zombie.Browser({
+                                            runScripts: true,
+                                            site: 'http://localhost:3003'
+                                        });
+
+        zombie.visit('/index.html', function (error, newBrowser) {
+            world.browser = new Browser(newBrowser);
+            callback(error);
+        });
+    });
+
+    this.After(function (callback) {
+        this.serverProcess.on('exit', callback);
+        this.serverProcess.kill();
     });
 };
 

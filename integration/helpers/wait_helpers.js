@@ -1,6 +1,6 @@
 var log, timers, wait;
 
-log = require('../../../lib/logger');
+log = require('../../lib/logger');
 
 timers = require('timers');
 

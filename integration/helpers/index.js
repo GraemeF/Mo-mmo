@@ -2,7 +2,7 @@ var log;
 
 process.env.NODE_ENV = 'test';
 
-log = require("../../../lib/logger");
+log = require("../../lib/logger");
 
 module.exports = {
   log: log,

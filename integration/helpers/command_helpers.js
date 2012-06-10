@@ -1,8 +1,8 @@
 var util = require("util");
 var express = require("express");
 var request = require('request');
-var log = require("../../../lib/logger");
-var Mommo = require("../../../lib");
+var log = require("../../lib/logger");
+var Mommo = require("../../lib");
 var server = express.createServer();
 var eventStore = new Mommo.Domain.InMemoryEventStore();
 var domainEvents = new Mommo.Domain.DomainEvents();
