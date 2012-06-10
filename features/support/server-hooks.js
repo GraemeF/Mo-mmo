@@ -1,6 +1,8 @@
 var spawn = require('child_process').spawn;
 var Zombie = require("zombie");
 var Browser = require('./browser');
+var request = require('request');
+var util = require('util');
 
 var runServer = function (callback) {
     var commandProcess = spawn("node", ["lib/server"]);
@@ -17,6 +19,23 @@ var hooks = function () {
 
         runServer(function (error, serverProcess) {
             world.serverProcess = serverProcess;
+            world.baseUri = 'http://localhost:3003';
+
+            world.sendCommand = function (command, callback) {
+                //console.log("POSTing command:", util.inspect(command, false, null));
+                request.post({
+                                 uri: world.baseUri + "/commands",
+                                 json: command
+                             },
+                             function (error, response, body) {
+                                 if (error === null) {
+                                     if (response.statusCode !== 201) {
+                                         error = body;
+                                     }
+                                 }
+                                 callback(error, response);
+                             });
+            };
             callback(error);
         });
     });
@@ -25,7 +44,7 @@ var hooks = function () {
         var world = this;
         var zombie = new Zombie.Browser({
                                             runScripts: true,
-                                            site: 'http://localhost:3003'
+                                            site: this.baseUri
                                         });
 
         zombie.visit('/index.html', function (error, newBrowser) {
