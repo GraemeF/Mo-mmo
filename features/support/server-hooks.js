@@ -3,6 +3,7 @@ var Zombie = require("zombie");
 var Browser = require('./browser');
 var request = require('request');
 var util = require('util');
+var io = require('socket.io-client');
 
 var runServer = function (callback) {
     var commandProcess = spawn("node", ["lib/server"]);
@@ -20,6 +21,7 @@ var hooks = function () {
         runServer(function (error, serverProcess) {
             world.serverProcess = serverProcess;
             world.baseUri = 'http://localhost:3003';
+            world.socket = io.connect(world.baseUri);
 
             world.sendCommand = function (command, callback) {
                 //console.log("POSTing command:", util.inspect(command, false, null));
@@ -36,6 +38,7 @@ var hooks = function () {
                                  callback(error, response);
                              });
             };
+
             callback(error);
         });
     });
