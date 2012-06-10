@@ -26,29 +26,15 @@ module.exports = function () {
                                    callback);
               });
 
-    this.When(/^I wait for character (\d+) to reach \[(\d+), (\d+), (\d+)\]$/,
+    this.When(/^character (\d+) should stop at \[(\d+), (\d+), (\d+)\]$/,
               function (id, x, y, z, callback) {
-                  this.socket.on('characterMoved', function (data) {
+                  this.socket.on('characterStopped', function (data) {
                       var received = util.inspect(data, false, null);
+                      console.log(received);
                       var expected = util.inspect({id: id, location: [ x, y, z]}, false, null);
                       if (received === expected) {
                           callback();
                       }
                   });
-                  this.socket.on('characterMoving', function (data) {
-                      var received = util.inspect(data, false, null);
-                      console.log('characterMoving:', received);
-                  });
               });
-
-    this.Then(/^I should receive events describing the movement of character (\d+) towards \[(\d+), (\d+), (\d+)\]$/, function (arg1, arg2, arg3, arg4, callback) {
-        // express the regexp above with the code you wish you had
-        callback.pending();
-    });
-
-    this.Then(/^I should receive a characterMoved event for character (\d+)$/, function (arg1, callback) {
-        // express the regexp above with the code you wish you had
-        callback.pending();
-    });
-
 };
