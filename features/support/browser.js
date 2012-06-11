@@ -1,13 +1,21 @@
 var _ = require("underscore");
+var soon = require('patience').soon;
 
 var Browser = function (zombie) {
+    console.log('created browser');
     this.zombie = zombie;
 };
 
 Browser.prototype.createCharacter = function (name, callback) {
-    this.zombie
-        .fill('newCharacterName', name)
-        .pressButton('Add Character', callback);
+    var self = this;
+
+    soon(function () {
+        return self.zombie.window.viewModel.connected();
+    }, this, function () {
+        self.zombie
+            .fill('newCharacterName', name)
+            .pressButton('Add Character', callback);
+    });
 };
 
 Browser.prototype.characters = function () {

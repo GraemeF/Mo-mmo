@@ -26,15 +26,24 @@ module.exports = function () {
                                    callback);
               });
 
+    this.Then(/^character (\d+) should begin moving towards \[(\d+), (\d+), (\d+)\]$/,
+              function (id, x, y, z, callback) {
+                  soon(function () {
+                      this.events.should.contain('yeah');
+                  }, this, this.failStepOnError(callback));
+              });
+
     this.When(/^character (\d+) should stop at \[(\d+), (\d+), (\d+)\]$/,
               function (id, x, y, z, callback) {
-                  this.socket.on('characterStopped', function (data) {
-                      var received = util.inspect(data, false, null);
-                      console.log(received);
-                      var expected = util.inspect({id: id, location: [ x, y, z]}, false, null);
-                      if (received === expected) {
-                          callback();
-                      }
-                  });
+                  callback.pending();
+
+//                  this.socket.on('characterStopped', function (data) {
+//                      var received = util.inspect(data, false, null);
+//                      console.log(received);
+//                      var expected = util.inspect({id: id, location: [ x, y, z]}, false, null);
+//                      if (received === expected) {
+//                          callback();
+//                      }
+//                  });
               });
 };

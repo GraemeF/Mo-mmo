@@ -12,7 +12,7 @@
 <form data-bind="submit: addCharacter">
     <label for="newCharacterName">Name</label>
     <input data-bind="value: newCharacterName" id="newCharacterName" name="newCharacterName"/>
-    <button type="submit">Add Character</button>
+    <button type="submit" data-bind="enable: connected">Add Character</button>
 </form>
 <p>Location <span id="location"></span></p>
 

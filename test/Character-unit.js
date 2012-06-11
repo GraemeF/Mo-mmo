@@ -15,7 +15,7 @@ describe('Character', function () {
         var character;
 
         beforeEach(function () {
-            character = new Character(1, 'bob', mover, now);
+            character = new Character(mover, 1, 'bob', now);
         });
 
         it('should add a characterCreated event to the character\'s uncommitted events',
@@ -96,7 +96,7 @@ describe('Character', function () {
         ];
 
         beforeEach(function () {
-            character = new Character(events);
+            character = new Character(mover, events);
         });
 
         it('should have the id from the event', function () {

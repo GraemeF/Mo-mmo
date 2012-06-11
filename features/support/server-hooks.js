@@ -4,6 +4,14 @@ var Browser = require('./browser');
 var request = require('request');
 var util = require('util');
 var io = require('socket.io-client');
+var _ = require('underscore');
+
+var events = [
+    'characterCreated',
+    'characterDeleted',
+    'characterMoving',
+    'characterStopped'
+];
 
 var runServer = function (callback) {
     var commandProcess = spawn("node", ["lib/server"]);
@@ -16,37 +24,57 @@ var runServer = function (callback) {
 
 var hooks = function () {
     this.Before(function (callback) {
+        console.log('before without @browser');
         var world = this;
+
+        world.failStepOnError = function (callback) {
+            return function (error) {
+                if (error) {
+                    callback.fail(error);
+                }
+                callback();
+            };
+        };
 
         runServer(function (error, serverProcess) {
             world.serverProcess = serverProcess;
-            world.baseUri = 'http://localhost:3003';
+            world.baseUri = 'http://localhost:3003/';
             world.socket = io.connect(world.baseUri);
+            world.socket.on('connect', function () {
 
-            world.sendCommand = function (command, callback) {
-                //console.log("POSTing command:", util.inspect(command, false, null));
-                request.post({
-                                 uri: world.baseUri + "/commands",
-                                 json: command
-                             },
-                             function (error, response, body) {
-                                 if (error === null) {
-                                     if (response.statusCode !== 201) {
-                                         error = body;
+                world.events = [];
+
+                _.each(events, function (event) {
+                    world.socket.on(event, function (data) {
+                        world.events.push(data);
+                    });
+                });
+
+                world.sendCommand = function (command, callback) {
+                    request.post({
+                                     uri: world.baseUri + "commands",
+                                     json: command
+                                 },
+                                 function (error, response, body) {
+                                     if (error === null) {
+                                         if (response.statusCode !== 201) {
+                                             error = body;
+                                         }
                                      }
-                                 }
-                                 callback(error, response);
-                             });
-            };
+                                     callback(error, response);
+                                 });
+                };
 
-            callback(error);
+                callback(error);
+            });
         });
     });
 
     this.Before("@browser", function (callback) {
+        console.log('before with @browser');
         var world = this;
         var zombie = new Zombie.Browser({
-                                            runScripts: true,
+                                            debug: false,
                                             site: this.baseUri
                                         });
 
@@ -57,6 +85,7 @@ var hooks = function () {
     });
 
     this.After(function (callback) {
+        console.log('after');
         this.serverProcess.on('exit', callback);
         this.serverProcess.kill();
     });
