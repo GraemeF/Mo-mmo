@@ -28,9 +28,10 @@ module.exports = function () {
 
     this.Then(/^character (\d+) should begin moving towards \[(\d+), (\d+), (\d+)\]$/,
               function (id, x, y, z, callback) {
-                  soon(function () {
-                      this.events.should.contain('yeah');
-                  }, this, this.failStepOnError(callback));
+                  callback.pending();
+//                  soon(function () {
+//                      this.events.should.contain('yeah');
+//                  }, this, this.failStepOnError(callback));
               });
 
     this.When(/^character (\d+) should stop at \[(\d+), (\d+), (\d+)\]$/,

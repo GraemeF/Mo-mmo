@@ -39,7 +39,11 @@ var hooks = function () {
         runServer(function (error, serverProcess) {
             world.serverProcess = serverProcess;
             world.baseUri = 'http://localhost:3003/';
-            world.socket = io.connect(world.baseUri, {'force new connection': true});
+            world.socket = io.connect(world.baseUri,
+                                      {
+                                          'force new connection': true,
+                                          reconnect: false
+                                      });
             world.socket.on('connect', function () {
                 world.events = [];
 
@@ -88,9 +92,12 @@ var hooks = function () {
     });
 
     this.After(function (callback) {
-        this.socket = null;
-        this.serverProcess.on('exit', callback);
-        this.serverProcess.kill();
+        var world = this;
+        world.socket.on('disconnect', function () {
+            world.serverProcess.on('exit', callback);
+            world.serverProcess.kill();
+        });
+        world.socket.disconnect();
     });
 };
 
