@@ -5,7 +5,6 @@ var util = require('util');
 module.exports = function () {
 
     this.When('I create a character named $name', function (name, callback) {
-        console.log(name);
         this.browser.createCharacter(name, callback);
     });
 

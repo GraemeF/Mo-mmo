@@ -1,6 +1,6 @@
 var spawn = require('child_process').spawn;
 var Zombie = require("zombie");
-var Browser = require('./browser');
+var Browser = require('../../helpers/browser');
 var request = require('request');
 var util = require('util');
 var io = require('socket.io-client');
@@ -23,8 +23,8 @@ var runServer = function (callback) {
 };
 
 var hooks = function () {
+
     this.Before(function (callback) {
-        console.log('before without @browser');
         var world = this;
 
         world.failStepOnError = function (callback) {
@@ -39,9 +39,8 @@ var hooks = function () {
         runServer(function (error, serverProcess) {
             world.serverProcess = serverProcess;
             world.baseUri = 'http://localhost:3003/';
-            world.socket = io.connect(world.baseUri);
+            world.socket = io.connect(world.baseUri, {'force new connection': true});
             world.socket.on('connect', function () {
-
                 world.events = [];
 
                 _.each(events, function (event) {
@@ -71,7 +70,6 @@ var hooks = function () {
     });
 
     this.Before("@browser", function (callback) {
-        console.log('before with @browser');
         var world = this;
         var zombie = new Zombie.Browser({
                                             debug: false,
@@ -84,8 +82,13 @@ var hooks = function () {
         });
     });
 
+    this.After("@browser", function (callback) {
+        this.browser = null;
+        callback();
+    });
+
     this.After(function (callback) {
-        console.log('after');
+        this.socket = null;
         this.serverProcess.on('exit', callback);
         this.serverProcess.kill();
     });

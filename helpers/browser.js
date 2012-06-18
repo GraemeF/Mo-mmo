@@ -2,7 +2,6 @@ var _ = require("underscore");
 var soon = require('patience').soon;
 
 var Browser = function (zombie) {
-    console.log('created browser');
     this.zombie = zombie;
 };
 
